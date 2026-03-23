@@ -7,7 +7,9 @@
     "userId": "e38cbf46-f0d8-4f62-aabc-2eb4f1279cb7",
     "username": "admin",
     "createdAt": "2026-03-17T02:21:12.670Z",
-    "resolved": false
+    "resolved": true,
+    "resolvedAt": "2026-03-23T22:16:59.650Z",
+    "resolvedBy": "admin"
   },
   "bba0ecaa-dc66-4916-8496-cd6fc6a60862": {
     "id": "bba0ecaa-dc66-4916-8496-cd6fc6a60862",
@@ -17,6 +19,8 @@
     "userId": "e38cbf46-f0d8-4f62-aabc-2eb4f1279cb7",
     "username": "admin",
     "createdAt": "2026-03-17T03:36:57.268Z",
-    "resolved": false
+    "resolved": true,
+    "resolvedAt": "2026-03-23T22:27:08.498Z",
+    "resolvedBy": "admin"
   }
 }
