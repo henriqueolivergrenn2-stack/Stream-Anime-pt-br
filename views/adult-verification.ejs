@@ -1,0 +1,53 @@
+<% title = 'Verificação de Idade - ' + config.siteName %>
+
+<section class="verification-section">
+    <div class="verification-container">
+        <div class="verification-card">
+            <div class="verification-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <h1>Conteúdo Adulto</h1>
+            
+            <div class="age-warning">
+                <span class="age-number">18</span>
+                <span class="age-text">+</span>
+            </div>
+            
+            <p class="verification-text">
+                Esta área contém conteúdo destinado apenas para maiores de 18 anos.
+            </p>
+            
+            <p class="verification-subtext">
+                Ao clicar em "Tenho mais de 18 anos", você confirma que:
+            </p>
+            
+            <ul class="verification-list">
+                <li><i class="fas fa-check"></i> Tem pelo menos 18 anos de idade</li>
+                <li><i class="fas fa-check"></i> Está ciente do conteúdo adulto</li>
+                <li><i class="fas fa-check"></i> Acessa por livre e espontânea vontade</li>
+            </ul>
+            
+            <div class="verification-actions">
+                <form action="/verify-age" method="POST" class="verification-form">
+                    <input type="hidden" name="redirect" value="<%= redirect %>">
+                    <input type="hidden" name="confirm" value="yes">
+                    <button type="submit" class="btn btn-danger btn-lg btn-block">
+                        <i class="fas fa-check"></i>
+                        <span>Tenho mais de 18 anos</span>
+                    </button>
+                </form>
+                
+                <a href="/" class="btn btn-outline btn-block">
+                    <i class="fas fa-times"></i>
+                    <span>Voltar para o início</span>
+                </a>
+            </div>
+            
+            <p class="verification-footer">
+                <i class="fas fa-shield-alt"></i>
+                Sua escolha será salva para futuras visitas.
+            </p>
+        </div>
+    </div>
+</section>

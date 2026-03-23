@@ -1,0 +1,153 @@
+<% title = 'Gerenciar Animes - Admin - ' + config.siteName %>
+
+<section class="admin-section">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <i class="fas fa-cog"></i>
+                <span>Admin</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="/admin" class="admin-nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/animes" class="admin-nav-link active">
+                    <i class="fas fa-film"></i>
+                    <span>Animes</span>
+                </a>
+                <a href="/admin/tags" class="admin-nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Gêneros</span>
+                </a>
+                <a href="/admin/users" class="admin-nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="/admin/banners" class="admin-nav-link">
+                    <i class="fas fa-image"></i>
+                    <span>Banners</span>
+                </a>
+                <a href="/admin/ads" class="admin-nav-link">
+                    <i class="fas fa-ad"></i>
+                    <span>Anúncios</span>
+                </a>
+                <a href="/admin/settings" class="admin-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="/admin/reports" class="admin-nav-link">
+                    <i class="fas fa-flag"></i>
+                    <span>Reportes</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Gerenciar Animes</h1>
+                <div class="admin-actions">
+                    <a href="/admin/anime/add" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Adicionar Anime</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Search -->
+            <div class="admin-search">
+                <input type="text" id="animeSearch" placeholder="Buscar anime..." onkeyup="filterAnimes()">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <!-- Animes Table -->
+            <div class="admin-box">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Capa</th>
+                                <th>Título</th>
+                                <th>Gêneros</th>
+                                <th>Status</th>
+                                <th>Views</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="animesTable">
+                            <% Object.entries(animes).forEach(([id, anime]) => { %>
+                            <tr data-title="<%= anime.title.toLowerCase() %>">
+                                <td>
+                                    <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>" class="table-thumb">
+                                </td>
+                                <td>
+                                    <div class="table-title">
+                                        <%= anime.title %>
+                                        <% if (anime.isAdult) { %>
+                                        <span class="badge badge-danger">+18</span>
+                                        <% } %>
+                                        <% if (anime.isFeatured) { %>
+                                        <span class="badge badge-warning"><i class="fas fa-star"></i></span>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-tags">
+                                        <% (anime.tags || []).slice(0, 3).forEach(tagId => { %>
+                                        <% const tag = tags[tagId] %>
+                                        <% if (tag) { %>
+                                        <span class="table-tag" style="background: <%= tag.color %>20; color: <%= tag.color %>">
+                                            <%= tag.name %>
+                                        </span>
+                                        <% } %>
+                                        <% }) %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge <%= anime.status %>">
+                                        <%= anime.status === 'ongoing' ? 'Em Lançamento' : anime.status === 'completed' ? 'Completo' : 'Pausado' %>
+                                    </span>
+                                </td>
+                                <td><%= (anime.views || 0).toLocaleString() %></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a href="/admin/episodes/<%= id %>" class="btn btn-sm btn-info" title="Episódios">
+                                            <i class="fas fa-play-circle"></i>
+                                        </a>
+                                        <a href="/admin/anime/edit/<%= id %>" class="btn btn-sm btn-primary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="/admin/anime/delete/<%= id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este anime? Todos os episódios serão removidos.')">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Deletar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</section>
+
+<script>
+function filterAnimes() {
+    const search = document.getElementById('animeSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#animesTable tr');
+    
+    rows.forEach(row => {
+        const title = row.dataset.title;
+        if (title.includes(search)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>

@@ -1,0 +1,329 @@
+<% title = anime.title + ' - ' + config.siteName %>
+<% description = anime.description || anime.synopsis %>
+<% ogImage = anime.coverImage %>
+
+<!-- Anime Header -->
+<section class="anime-header">
+    <div class="anime-banner" style="background-image: url('<%= anime.bannerImage || anime.coverImage %>')"></div>
+    <div class="anime-banner-overlay"></div>
+    
+    <div class="container">
+        <div class="anime-header-content">
+            <div class="anime-poster">
+                <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>">
+                <% if (anime.isAdult) { %>
+                <div class="adult-badge">+18</div>
+                <% } %>
+            </div>
+            
+            <div class="anime-info">
+                <h1 class="anime-title"><%= anime.title %></h1>
+                
+                <% if (anime.synonyms && anime.synonyms.length > 0) { %>
+                <p class="anime-synonyms">Também conhecido como: <%= anime.synonyms.join(', ') %></p>
+                <% } %>
+                
+                <div class="anime-meta">
+                    <% if (anime.rating) { %>
+                    <span class="meta-item rating">
+                        <i class="fas fa-star"></i>
+                        <%= anime.rating.toFixed(1) %>
+                    </span>
+                    <% } %>
+                    <% if (anime.year) { %>
+                    <span class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <%= anime.year %>
+                    </span>
+                    <% } %>
+                    <% if (anime.type) { %>
+                    <span class="meta-item type"><%= anime.type.toUpperCase() %></span>
+                    <% } %>
+                    <% if (anime.status) { %>
+                    <span class="meta-item status <%= anime.status %>">
+                        <%= anime.status === 'ongoing' ? 'Em Lançamento' : anime.status === 'completed' ? 'Completo' : 'Pausado' %>
+                    </span>
+                    <% } %>
+                    <% if (anime.duration) { %>
+                    <span class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <%= anime.duration %>
+                    </span>
+                    <% } %>
+                </div>
+                
+                <!-- Tags -->
+                <% if (anime.tags && anime.tags.length > 0) { %>
+                <div class="anime-tags">
+                    <% anime.tags.forEach(tagId => { %>
+                    <% const tag = tags[tagId] %>
+                    <% if (tag) { %>
+                    <a href="/search?tag=<%= tagId %>" class="tag" style="--tag-color: <%= tag.color %>">
+                        <%= tag.icon %> <%= tag.name %>
+                    </a>
+                    <% } %>
+                    <% }) %>
+                </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="anime-actions">
+                    <% if (episodes && episodes.length > 0) { %>
+                    <a href="/watch/<%= episodes[0][0] %>" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play"></i>
+                        <span>Assistir Agora</span>
+                    </a>
+                    <% } %>
+                    
+                    <% if (user && user.userId) { %>
+                    <button class="btn btn-outline btn-lg" id="favoriteBtn" onclick="toggleFavorite('<%= anime.id %>')">
+                        <i class="far fa-heart"></i>
+                        <span>Favoritar</span>
+                    </button>
+                    <button class="btn btn-outline btn-lg" id="watchlistBtn" onclick="toggleWatchlist('<%= anime.id %>')">
+                        <i class="far fa-bookmark"></i>
+                        <span>Watchlist</span>
+                    </button>
+                    <% } %>
+                    
+                    <button class="btn btn-outline btn-lg" onclick="shareAnime()">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Compartilhar</span>
+                    </button>
+                </div>
+                
+                <!-- Stats -->
+                <div class="anime-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-eye"></i>
+                        <span><%= (anime.views || 0).toLocaleString() %> views</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-list-ol"></i>
+                        <span><%= stats.episodesCount %> episódios</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-comments"></i>
+                        <span><%= stats.commentsCount %> comentários</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Anime Content -->
+<section class="anime-content">
+    <div class="container">
+        <div class="content-layout">
+            <!-- Main Content -->
+            <div class="main-column">
+                <!-- Synopsis -->
+                <% if (anime.synopsis || anime.description) { %>
+                <div class="content-box">
+                    <h2 class="box-title">
+                        <i class="fas fa-align-left"></i>
+                        <span>Sinopse</span>
+                    </h2>
+                    <div class="synopsis-text">
+                        <%= anime.synopsis || anime.description %>
+                    </div>
+                </div>
+                <% } %>
+                
+                <!-- Episodes -->
+                <div class="content-box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Episódios</span>
+                        </h2>
+                        <% if (episodes.length > 0) { %>
+                        <div class="episode-filter">
+                            <button class="filter-btn active" data-filter="all">Todos</button>
+                            <button class="filter-btn" data-filter="latest">Recentes</button>
+                        </div>
+                        <% } %>
+                    </div>
+                    
+                    <% if (episodes.length > 0) { %>
+                    <div class="episodes-list">
+                        <% episodes.forEach(([id, episode]) => { %>
+                        <a href="/watch/<%= id %>" class="episode-item">
+                            <div class="episode-number">EP <%= episode.number %></div>
+                            <div class="episode-info">
+                                <h4 class="episode-title"><%= episode.title || 'Episódio ' + episode.number %></h4>
+                                <% if (episode.duration) { %>
+                                <span class="episode-duration">
+                                    <i class="fas fa-clock"></i>
+                                    <%= episode.duration %>
+                                </span>
+                                <% } %>
+                            </div>
+                            <div class="episode-play">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </a>
+                        <% }) %>
+                    </div>
+                    <% } else { %>
+                    <div class="empty-state">
+                        <i class="fas fa-film"></i>
+                        <p>Nenhum episódio disponível ainda.</p>
+                    </div>
+                    <% } %>
+                </div>
+                
+                <!-- Comments -->
+                <% if (config.commentsEnabled) { %>
+                <div class="content-box">
+                    <h2 class="box-title">
+                        <i class="fas fa-comments"></i>
+                        <span>Comentários (<%= comments.length %>)</span>
+                    </h2>
+                    
+                    <% if (user && user.userId) { %>
+                    <form class="comment-form" onsubmit="submitComment(event, '<%= anime.id %>')">
+                        <div class="comment-input-wrapper">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="comment-input-group">
+                                <textarea name="content" placeholder="Escreva um comentário..." required></textarea>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Enviar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <% } else { %>
+                    <div class="login-prompt">
+                        <p><a href="/login?redirect=/anime/<%= anime.id %>">Faça login</a> para comentar.</p>
+                    </div>
+                    <% } %>
+                    
+                    <div class="comments-list" id="commentsList">
+                        <% if (comments.length > 0) { %>
+                        <% comments.forEach(([id, comment]) => { %>
+                        <div class="comment-item" data-comment-id="<%= id %>">
+                            <div class="comment-avatar">
+                                <% if (comment.userAvatar) { %>
+                                <img src="<%= comment.userAvatar %>" alt="<%= comment.username %>">
+                                <% } else { %>
+                                <i class="fas fa-user"></i>
+                                <% } %>
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <span class="comment-author"><%= comment.username %></span>
+                                    <span class="comment-date">
+                                        <%= new Date(comment.createdAt).toLocaleDateString('pt-BR') %>
+                                    </span>
+                                </div>
+                                <p class="comment-text"><%= comment.content %></p>
+                                <div class="comment-actions">
+                                    <button class="action-btn" onclick="likeComment('<%= id %>')">
+                                        <i class="far fa-thumbs-up"></i>
+                                        <span><%= comment.likes || 0 %></span>
+                                    </button>
+                                    <% if (user && (user.userId === comment.userId || user.isAdmin)) { %>
+                                    <button class="action-btn delete" onclick="deleteComment('<%= id %>')">
+                                        <i class="far fa-trash-alt"></i>
+                                        <span>Deletar</span>
+                                    </button>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                        <% } else { %>
+                        <div class="empty-state">
+                            <i class="fas fa-comment-slash"></i>
+                            <p>Seja o primeiro a comentar!</p>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Anime Info -->
+                <div class="sidebar-box">
+                    <h3 class="sidebar-title">Informações</h3>
+                    <ul class="info-list">
+                        <% if (anime.studio) { %>
+                        <li>
+                            <span class="info-label">Estúdio</span>
+                            <span class="info-value"><%= anime.studio %></span>
+                        </li>
+                        <% } %>
+                        <% if (anime.season) { %>
+                        <li>
+                            <span class="info-label">Temporada</span>
+                            <span class="info-value"><%= anime.season %></span>
+                        </li>
+                        <% } %>
+                        <% if (anime.episodesCount) { %>
+                        <li>
+                            <span class="info-label">Episódios</span>
+                            <span class="info-value"><%= anime.episodesCount %></span>
+                        </li>
+                        <% } %>
+                        <% if (anime.duration) { %>
+                        <li>
+                            <span class="info-label">Duração</span>
+                            <span class="info-value"><%= anime.duration %></span>
+                        </li>
+                        <% } %>
+                        <% if (anime.releaseDay) { %>
+                        <li>
+                            <span class="info-label">Lançamento</span>
+                            <span class="info-value"><%= anime.releaseDay %></span>
+                        </li>
+                        <% } %>
+                        <li>
+                            <span class="info-label">Adicionado em</span>
+                            <span class="info-value">
+                                <%= new Date(anime.createdAt).toLocaleDateString('pt-BR') %>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Related Animes -->
+                <% if (relatedAnimes.length > 0) { %>
+                <div class="sidebar-box">
+                    <h3 class="sidebar-title">Animes Relacionados</h3>
+                    <div class="related-list">
+                        <% relatedAnimes.forEach(([id, related]) => { %>
+                        <a href="/anime/<%= id %>" class="related-item">
+                            <img src="<%= related.coverImage || '/images/default-anime.jpg' %>" alt="<%= related.title %>">
+                            <div class="related-info">
+                                <h4><%= related.title %></h4>
+                                <% if (related.rating) { %>
+                                <span class="related-rating">
+                                    <i class="fas fa-star"></i>
+                                    <%= related.rating.toFixed(1) %>
+                                </span>
+                                <% } %>
+                            </div>
+                        </a>
+                        <% }) %>
+                    </div>
+                </div>
+                <% } %>
+                
+                <!-- Report -->
+                <div class="sidebar-box">
+                    <button class="btn btn-outline btn-block" onclick="reportAnime('<%= anime.id %>')">
+                        <i class="fas fa-flag"></i>
+                        <span>Reportar Problema</span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>

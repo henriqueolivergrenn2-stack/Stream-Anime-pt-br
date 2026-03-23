@@ -1,0 +1,171 @@
+<header class="header">
+    <div class="header-container">
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <i class="fas fa-play-circle"></i>
+            <span><%= config.siteName %></span>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="nav-menu" id="navMenu">
+            <a href="/" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'home' ? 'active' : '' %>">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="/genres" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'genres' ? 'active' : '' %>">
+                <i class="fas fa-tags"></i>
+                <span>Gêneros</span>
+            </a>
+            <a href="/schedule" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'schedule' ? 'active' : '' %>">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendário</span>
+            </a>
+            <% if (user && user.isAdult) { %>
+            <a href="/adult" class="nav-link adult-link <%= typeof activeNav !== 'undefined' && activeNav === 'adult' ? 'active' : '' %>">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>+18</span>
+            </a>
+            <% } %>
+        </nav>
+
+        <!-- Search -->
+        <form action="/search" method="GET" class="search-form" id="searchForm">
+            <div class="search-box">
+                <input type="text" name="q" placeholder="Buscar anime..." autocomplete="off" id="searchInput">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+        </form>
+
+        <!-- User Menu -->
+        <div class="user-menu">
+            <% if (user && user.userId) { %>
+                <div class="dropdown">
+                    <button class="user-btn" onclick="toggleDropdown()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="user-name"><%= user.username %></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">
+                            <i class="fas fa-id-card"></i>
+                            <span>Meu Perfil</span>
+                        </a>
+                        <a href="/history" class="dropdown-item">
+                            <i class="fas fa-history"></i>
+                            <span>Histórico</span>
+                        </a>
+                        <a href="/favorites" class="dropdown-item">
+                            <i class="fas fa-heart"></i>
+                            <span>Favoritos</span>
+                        </a>
+                        <a href="/watchlist" class="dropdown-item">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Watchlist</span>
+                        </a>
+                        <% if (user.isAdmin) { %>
+                        <div class="dropdown-divider"></div>
+                        <a href="/admin" class="dropdown-item admin-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Painel Admin</span>
+                        </a>
+                        <% } %>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item logout-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn btn-primary btn-sm">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Entrar</span>
+                </a>
+                <a href="/register" class="btn btn-outline btn-sm">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Cadastrar</span>
+                </a>
+            <% } %>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+        <span class="logo">
+            <i class="fas fa-play-circle"></i>
+            <%= config.siteName %>
+        </span>
+        <button class="mobile-close" onclick="toggleMobileMenu()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <nav class="mobile-nav">
+        <a href="/" class="mobile-nav-link">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/genres" class="mobile-nav-link">
+            <i class="fas fa-tags"></i>
+            <span>Gêneros</span>
+        </a>
+        <a href="/schedule" class="mobile-nav-link">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Calendário</span>
+        </a>
+        <% if (user && user.userId) { %>
+        <a href="/history" class="mobile-nav-link">
+            <i class="fas fa-history"></i>
+            <span>Histórico</span>
+        </a>
+        <a href="/favorites" class="mobile-nav-link">
+            <i class="fas fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="/watchlist" class="mobile-nav-link">
+            <i class="fas fa-bookmark"></i>
+            <span>Watchlist</span>
+        </a>
+        <a href="/profile" class="mobile-nav-link">
+            <i class="fas fa-id-card"></i>
+            <span>Meu Perfil</span>
+        </a>
+        <% if (user.isAdult) { %>
+        <a href="/adult" class="mobile-nav-link adult-link">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Conteúdo +18</span>
+        </a>
+        <% } %>
+        <% if (user.isAdmin) { %>
+        <a href="/admin" class="mobile-nav-link admin-link">
+            <i class="fas fa-cog"></i>
+            <span>Painel Admin</span>
+        </a>
+        <% } %>
+        <a href="/logout" class="mobile-nav-link logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sair</span>
+        </a>
+        <% } else { %>
+        <a href="/login" class="mobile-nav-link">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Entrar</span>
+        </a>
+        <a href="/register" class="mobile-nav-link">
+            <i class="fas fa-user-plus"></i>
+            <span>Cadastrar</span>
+        </a>
+        <% } %>
+    </nav>
+</div>

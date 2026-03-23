@@ -1,0 +1,182 @@
+<% title = 'Meu Perfil - ' + config.siteName %>
+
+<section class="profile-page">
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <% if (userData.avatar) { %>
+                <img src="<%= userData.avatar %>" alt="<%= userData.username %>">
+                <% } else { %>
+                <i class="fas fa-user"></i>
+                <% } %>
+            </div>
+            <div class="profile-info">
+                <h2><%= userData.username %></h2>
+                <p><i class="fas fa-envelope"></i> <%= userData.email %></p>
+                <p><i class="fas fa-calendar"></i> Membro desde <%= stats.joinDate %></p>
+                
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="number"><%= stats.totalWatched %></span>
+                        <span class="label">Episódios</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="number"><%= stats.favoritesCount %></span>
+                        <span class="label">Favoritos</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="number"><%= stats.watchlistCount %></span>
+                        <span class="label">Watchlist</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="profile-section">
+                <h3>
+                    <i class="fas fa-user-edit"></i>
+                    <span>Editar Perfil</span>
+                </h3>
+                <form action="/profile/update" method="POST" enctype="multipart/form-data" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<%= userData.email %>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="avatar">Foto de Perfil</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="avatar" name="avatar" accept="image/*">
+                            <div class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Escolher imagem</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Biografia</label>
+                        <textarea id="bio" name="bio" rows="3" placeholder="Conte um pouco sobre você..."><%= userData.bio || '' %></textarea>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                    
+                    <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Alterar Senha</h4>
+                    
+                    <div class="form-group">
+                        <label for="currentPassword">Senha Atual</label>
+                        <input type="password" id="currentPassword" name="currentPassword" placeholder="Deixe em branco para não alterar">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">Nova Senha</label>
+                        <input type="password" id="newPassword" name="newPassword" placeholder="Mínimo 6 caracteres">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-save"></i>
+                        <span>Salvar Alterações</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="profile-section">
+                <h3>
+                    <i class="fas fa-link"></i>
+                    <span>Links Rápidos</span>
+                </h3>
+                <div class="quick-links">
+                    <a href="/history" class="quick-link">
+                        <i class="fas fa-history"></i>
+                        <span>Histórico</span>
+                    </a>
+                    <a href="/favorites" class="quick-link">
+                        <i class="fas fa-heart"></i>
+                        <span>Favoritos</span>
+                    </a>
+                    <a href="/watchlist" class="quick-link">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Watchlist</span>
+                    </a>
+                    <% if (user.isAdmin) { %>
+                    <a href="/admin" class="quick-link admin">
+                        <i class="fas fa-cog"></i>
+                        <span>Painel Admin</span>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.quick-link:hover {
+    background: var(--primary);
+}
+
+.quick-link.admin {
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--danger);
+}
+
+.quick-link.admin:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.quick-link i {
+    width: 30px;
+    text-align: center;
+}
+
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-input-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border: 2px dashed rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.file-input-wrapper:hover .file-input-label {
+    border-color: var(--primary);
+    color: var(--text-primary);
+}
+</style>

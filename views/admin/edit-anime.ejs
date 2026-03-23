@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Editar Anime - <%= config.siteName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a;
+            color: #fff;
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+        
+        /* Header Mobile */
+        .mobile-header {
+            background: linear-gradient(135deg, <%= config.primaryColor %> 0%, #2f3542 100%);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .save-btn-mobile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2ed573;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Container */
+        .container {
+            padding: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Card */
+        .card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #2d2d44;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: <%= config.primaryColor %>;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a0a0b0;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #2d2d44;
+            border-radius: 12px;
+            background: #0f0f1a;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: <%= config.primaryColor %>;
+            background: #16162a;
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        /* Toggle Switch */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #0f0f1a;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+        }
+        
+        .toggle-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .toggle-icon.adult { background: #ff3838; }
+        .toggle-icon.featured { background: #ffa502; }
+        
+        .toggle-switch {
+            position: relative;
+            width: 55px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2d2d44;
+            transition: .3s;
+            border-radius: 30px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: #fff;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: <%= config.primaryColor %>;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+        
+        /* Image Upload */
+        .image-upload {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #2d2d44;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f1a;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .image-upload.has-image {
+            border-style: solid;
+            border-color: <%= config.primaryColor %>;
+        }
+        
+        .image-upload input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        .upload-placeholder {
+            text-align: center;
+            color: #666;
+            z-index: 1;
+        }
+        
+        .upload-placeholder i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: <%= config.primaryColor %>;
+        }
+        
+        .upload-preview {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        
+        .upload-change {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 3;
+            display: none;
+        }
+        
+        .image-upload.has-image .upload-change {
+            display: block;
+        }
+        
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .tag-checkbox {
+            position: relative;
+        }
+        
+        .tag-checkbox input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .tag-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #0f0f1a;
+            border: 2px solid #2d2d44;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .tag-checkbox input:checked + .tag-label {
+            background: <%= config.primaryColor %>;
+            border-color: <%= config.primaryColor %>;
+            color: #fff;
+        }
+        
+        .tag-label.adult {
+            border-color: #ff3838;
+            color: #ff3838;
+        }
+        
+        .tag-checkbox input:checked + .tag-label.adult {
+            background: #ff3838;
+            color: #fff;
+        }
+        
+        /* Grid para campos pequenos */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* Select customizado */
+        .select-wrapper {
+            position: relative;
+        }
+        
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: <%= config.primaryColor %>;
+            pointer-events: none;
+        }
+        
+        /* Bottom Actions */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            padding: 15px;
+            border-top: 1px solid #2d2d44;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: <%= config.primaryColor %>;
+            color: #fff;
+        }
+        
+        .btn-secondary {
+            background: #2d2d44;
+            color: #fff;
+        }
+        
+        .btn-danger {
+            background: #ff3838;
+            color: #fff;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        
+        /* Sinopse counter */
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* Status indicator */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-ongoing { background: #2ed573; color: #000; }
+        .status-completed { background: #3742fa; color: #fff; }
+        .status-hiatus { background: #ffa502; color: #000; }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #2d2d44;
+            border-top-color: <%= config.primaryColor %>;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Desktop adjustments */
+        @media (min-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+            
+            .bottom-actions {
+                position: static;
+                background: transparent;
+                border: none;
+                padding: 0;
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Salvando alterações...</p>
+    </div>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <a href="/admin/animes" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="header-title">Editar Anime</h1>
+            <button type="button" class="save-btn-mobile" onclick="document.getElementById('editForm').submit()">
+                <i class="fas fa-check"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <form id="editForm" action="/admin/anime/edit/<%= anime.id %>" method="POST" enctype="multipart/form-data">
+            
+            <!-- Imagem de Capa -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-image"></i>
+                    Capa do Anime
+                </div>
+                <div class="image-upload <%= anime.coverImage ? 'has-image' : '' %>" onclick="document.getElementById('coverInput').click()">
+                    <input type="file" id="coverInput" name="cover" accept="image/*" onchange="previewImage(this, 'coverPreview')">
+                    <% if (anime.coverImage) { %>
+                        <img src="<%= anime.coverImage %>" id="coverPreview" class="upload-preview">
+                    <% } else { %>
+                        <img id="coverPreview" class="upload-preview" style="display: none;">
+                    <% } %>
+                    <div class="upload-placeholder" id="coverPlaceholder" style="<%= anime.coverImage ? 'display: none;' : '' %>">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Toque para alterar capa</p>
+                        <small>Ou cole uma URL abaixo</small>
+                    </div>
+                    <span class="upload-change">
+                        <i class="fas fa-camera"></i> Alterar
+                    </span>
+                </div>
+                <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                    <input type="url" name="coverUrl" class="form-input" placeholder="https://exemplo.com/imagem.jpg" 
+                           value="<%= anime.coverImage && anime.coverImage.startsWith('http') ? anime.coverImage : '' %>">
+                </div>
+            </div>
+
+            <!-- Informações Básicas -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Informações Básicas
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Título do Anime *</label>
+                    <input type="text" name="title" class="form-input" required 
+                           value="<%= anime.title %>" placeholder="Ex: Attack on Titan">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sinopse</label>
+                    <textarea name="synopsis" class="form-textarea" id="synopsis" 
+                              placeholder="Digite a sinopse do anime..." maxlength="2000"><%= anime.synopsis || '' %></textarea>
+                    <div class="char-counter"><span id="charCount">0</span>/2000</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição Curta</label>
+                    <input type="text" name="description" class="form-input" 
+                           value="<%= anime.description || '' %>" placeholder="Breve descrição para SEO">
+                </div>
+            </div>
+
+            <!-- Detalhes -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-list-alt"></i>
+                    Detalhes
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <div class="select-wrapper">
+                            <select name="status" class="form-select">
+                                <option value="ongoing" <%= anime.status === 'ongoing' ? 'selected' : '' %>>Em Lançamento</option>
+                                <option value="completed" <%= anime.status === 'completed' ? 'selected' : '' %>>Completo</option>
+                                <option value="hiatus" <%= anime.status === 'hiatus' ? 'selected' : '' %>>Hiato</option>
+                                <option value="cancelled" <%= anime.status === 'cancelled' ? 'selected' : '' %>>Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <div class="select-wrapper">
+                            <select name="type" class="form-select">
+                                <option value="tv" <%= anime.type === 'tv' ? 'selected' : '' %>>TV</option>
+                                <option value="movie" <%= anime.type === 'movie' ? 'selected' : '' %>>Filme</option>
+                                <option value="ova" <%= anime.type === 'ova' ? 'selected' : '' %>>OVA</option>
+                                <option value="ona" <%= anime.type === 'ona' ? 'selected' : '' %>>ONA</option>
+                                <option value="special" <%= anime.type === 'special' ? 'selected' : '' %>>Especial</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ano</label>
+                        <input type="number" name="year" class="form-input" 
+                               value="<%= anime.year || new Date().getFullYear() %>" min="1950" max="2030">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Temporada</label>
+                        <div class="select-wrapper">
+                            <select name="season" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="winter" <%= anime.season === 'winter' ? 'selected' : '' %>>Inverno</option>
+                                <option value="spring" <%= anime.season === 'spring' ? 'selected' : '' %>>Primavera</option>
+                                <option value="summer" <%= anime.season === 'summer' ? 'selected' : '' %>>Verão</option>
+                                <option value="fall" <%= anime.season === 'fall' ? 'selected' : '' %>>Outono</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Episódios</label>
+                        <input type="number" name="episodesCount" class="form-input" 
+                               value="<%= anime.episodesCount || 0 %>" min="0" placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Duração</label>
+                        <input type="text" name="duration" class="form-input" 
+                               value="<%= anime.duration || '24 min' %>" placeholder="24 min">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estúdio</label>
+                        <input type="text" name="studio" class="form-input" 
+                               value="<%= anime.studio || '' %>" placeholder="Ex: MAPPA">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Dia de Lançamento</label>
+                        <div class="select-wrapper">
+                            <select name="releaseDay" class="form-select">
+                                <option value="">Não definido</option>
+                                <option value="Domingo" <%= anime.releaseDay === 'Domingo' ? 'selected' : '' %>>Domingo</option>
+                                <option value="Segunda" <%= anime.releaseDay === 'Segunda' ? 'selected' : '' %>>Segunda</option>
+                                <option value="Terça" <%= anime.releaseDay === 'Terça' ? 'selected' : '' %>>Terça</option>
+                                <option value="Quarta" <%= anime.releaseDay === 'Quarta' ? 'selected' : '' %>>Quarta</option>
+                                <option value="Quinta" <%= anime.releaseDay === 'Quinta' ? 'selected' : '' %>>Quinta</option>
+                                <option value="Sexta" <%= anime.releaseDay === 'Sexta' ? 'selected' : '' %>>Sexta</option>
+                                <option value="Sábado" <%= anime.releaseDay === 'Sábado' ? 'selected' : '' %>>Sábado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nota (0-10)</label>
+                        <input type="number" name="rating" class="form-input" step="0.1" min="0" max="10"
+                               value="<%= anime.rating || 0 %>" placeholder="0.0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-image"></i>
+                    Banner (Opcional)
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="url" name="bannerUrl" class="form-input" 
+                           value="<%= anime.bannerImage || '' %>" 
+                           placeholder="URL do banner largo (1920x400)">
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-tags"></i>
+                    Gêneros e Tags
+                </div>
+                
+                <div class="tags-container">
+                    <% Object.entries(tags).forEach(([id, tag]) => { %>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="<%= id %>" 
+                                   <%= (anime.tags || []).includes(id) ? 'checked' : '' %>>
+                            <span class="tag-label">
+                                <span style="color: <%= tag.color %>"><%= tag.icon %></span>
+                                <%= tag.name %>
+                            </span>
+                        </label>
+                    <% }); %>
+                    
+                    <% Object.entries(adultTags).forEach(([id, tag]) => { %>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="<%= id %>" 
+                                   <%= (anime.tags || []).includes(id) ? 'checked' : '' %>>
+                            <span class="tag-label adult">
+                                <span><%= tag.icon %></span>
+                                <%= tag.name %>
+                            </span>
+                        </label>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- Configurações -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </div>
+                
+                <div class="toggle-group">
+                    <div class="toggle-label">
+                        <div class="toggle-icon adult">🔞</div>
+                        <div>
+                            <div style="font-weight: 600;">Conteúdo Adulto</div>
+                            <div style="font-size: 12px; color: #888;">+18 / Hentai</div>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="isAdult" <%= anime.isAdult ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-label">
+                        <div class="toggle-icon featured">⭐</div>
+                        <div>
+                            <div style="font-weight: 600;">Destaque</div>
+                            <div style="font-size: 12px; color: #888;">Aparecer na home</div>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="isFeatured" <%= anime.isFeatured ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Estatísticas
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: center;">
+                    <div style="background: #0f0f1a; padding: 15px; border-radius: 12px;">
+                        <div style="font-size: 24px; font-weight: 700; color: <%= config.primaryColor %>;">
+                            <%= anime.views || 0 %>
+                        </div>
+                        <div style="font-size: 12px; color: #888;">Visualizações</div>
+                    </div>
+                    <div style="background: #0f0f1a; padding: 15px; border-radius: 12px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #2ed573;">
+                            <%= anime.createdAt ? new Date(anime.createdAt).toLocaleDateString('pt-BR') : 'N/A' %>
+                        </div>
+                        <div style="font-size: 12px; color: #888;">Data de Criação</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões Desktop -->
+            <div class="bottom-actions" style="display: none;" id="desktopActions">
+                <a href="/admin/animes" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </form>
+
+        <!-- Formulário de Exclusão -->
+        <form action="/admin/anime/delete/<%= anime.id %>" method="POST" 
+              onsubmit="return confirm('Tem certeza que deseja excluir este anime? Todos os episódios serão perdidos!');"
+              style="margin-top: 20px;">
+            <button type="submit" class="btn btn-danger" style="width: 100%;">
+                <i class="fas fa-trash-alt"></i> Excluir Anime
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Preview de imagem
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const placeholder = document.getElementById(previewId.replace('Preview', 'Placeholder'));
+            const uploadDiv = input.closest('.image-upload');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    uploadDiv.classList.add('has-image');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Contador de caracteres
+        const synopsis = document.getElementById('synopsis');
+        const charCount = document.getElementById('charCount');
+        
+        synopsis.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+        charCount.textContent = synopsis.value.length;
+
+        // Loading ao salvar
+        document.getElementById('editForm').addEventListener('submit', function() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        });
+
+        // Detectar desktop
+        if (window.innerWidth >= 768) {
+            document.getElementById('desktopActions').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

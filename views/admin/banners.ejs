@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Banners - <%= config.siteName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a; color: #fff; line-height: 1.6; padding-bottom: 100px;
+        }
+        .header { 
+            background: <%= config.primaryColor %>; padding: 15px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header h1 { font-size: 20px; }
+        .add-btn { 
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #2ed573; border: none; color: #fff;
+            font-size: 20px; cursor: pointer;
+        }
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box {
+            background: #1a1a2e; border-radius: 16px; padding: 20px;
+            text-align: center; border: 1px solid #2d2d44;
+        }
+        .stat-value { font-size: 32px; font-weight: 700; color: <%= config.primaryColor %>; }
+        .stat-label { font-size: 12px; color: #888; margin-top: 5px; }
+        
+        .banner-card {
+            background: #1a1a2e; border-radius: 16px; overflow: hidden;
+            margin-bottom: 15px; border: 2px solid #2d2d44; position: relative;
+        }
+        .banner-card.active { border-color: #2ed573; }
+        .status-tag {
+            position: absolute; top: 10px; right: 10px;
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+            background: #ff3838; z-index: 10;
+        }
+        .status-tag.active { background: #2ed573; color: #000; }
+        .banner-img {
+            width: 100%; height: 150px; object-fit: cover; display: block;
+        }
+        .banner-info { padding: 15px; }
+        .banner-title { font-weight: 600; margin-bottom: 8px; }
+        .banner-meta { font-size: 13px; color: #888; display: flex; gap: 15px; flex-wrap: wrap; }
+        
+        .banner-actions {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+            padding: 0 15px 15px;
+        }
+        .banner-actions button, .banner-actions a {
+            padding: 12px; border: none; border-radius: 10px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            text-decoration: none; text-align: center; color: #fff;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .btn-toggle { background: #2d2d44; }
+        .btn-toggle.active { background: #2ed573; color: #000; }
+        .btn-edit { background: #3742fa; }
+        .btn-del { background: #ff3838; }
+        
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95); z-index: 1000; align-items: flex-end;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #1a1a2e; width: 100%; max-width: 600px;
+            border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto;
+            animation: up 0.3s ease;
+        }
+        @keyframes up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; position: sticky; top: 0; background: #1a1a2e;
+            padding-bottom: 15px; border-bottom: 1px solid #2d2d44;
+        }
+        .close-modal {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #0f0f1a; border: none; color: #fff; cursor: pointer;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-label { 
+            display: block; margin-bottom: 6px; font-size: 14px; color: #a0a0b0;
+        }
+        .form-input, .form-select {
+            width: 100%; padding: 12px 14px; border: 2px solid #2d2d44;
+            border-radius: 10px; background: #0f0f1a; color: #fff; font-size: 16px;
+            -webkit-appearance: none;
+        }
+        
+        .image-upload {
+            width: 100%; height: 150px; border: 2px dashed #2d2d44;
+            border-radius: 12px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; background: #0f0f1a;
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        .image-upload.has-image { border-style: solid; border-color: <%= config.primaryColor %>; }
+        .image-upload input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+        .image-upload img { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .upload-icon { font-size: 40px; color: <%= config.primaryColor %>; margin-bottom: 10px; z-index: 1; }
+        .upload-text { font-size: 13px; color: #888; z-index: 1; }
+        
+        .position-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .pos-option {
+            padding: 20px; background: #0f0f1a; border: 2px solid #2d2d44;
+            border-radius: 12px; text-align: center; cursor: pointer;
+        }
+        .pos-option i { font-size: 24px; margin-bottom: 8px; color: <%= config.primaryColor %>; display: block; }
+        .pos-option input { display: none; }
+        .pos-option.active { border-color: <%= config.primaryColor %>; background: rgba(255,71,87,0.1); }
+        
+        .toggle-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; background: #0f0f1a; border-radius: 10px; margin: 15px 0;
+        }
+        .toggle-switch { position: relative; width: 50px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: #2d2d44; transition: .3s; border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px;
+            left: 4px; bottom: 4px; background: #fff; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background: #2ed573; }
+        input:checked + .slider:before { transform: translateX(22px); }
+        
+        .btn-save {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            background: <%= config.primaryColor %>; color: #fff;
+            font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        }
+        
+        .empty { text-align: center; padding: 60px 20px; color: #666; }
+        .empty i { font-size: 64px; margin-bottom: 20px; color: #2d2d44; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Banners</h1>
+        <button class="add-btn" onclick="openAdd()"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value"><%= Object.keys(banners).length %></div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: #2ed573;">
+                    <%= Object.values(banners).filter(b => b.active).length %>
+                </div>
+                <div class="stat-label">Ativos</div>
+            </div>
+        </div>
+
+        <% if (Object.keys(banners).length === 0) { %>
+            <div class="empty">
+                <i class="fas fa-image"></i>
+                <h3>Nenhum banner</h3>
+                <p>Toque no + para adicionar</p>
+            </div>
+        <% } else { %>
+            <% Object.entries(banners).sort((a,b) => (a[1].order||0)-(b[1].order||0)).forEach(([id, banner]) => { %>
+                <div class="banner-card <%= banner.active ? 'active' : '' %>">
+                    <span class="status-tag <%= banner.active ? 'active' : '' %>">
+                        <%= banner.active ? 'Ativo' : 'Inativo' %>
+                    </span>
+                    
+                    <% if (banner.image) { %>
+                        <img src="<%= banner.image %>" class="banner-img" alt="">
+                    <% } else { %>
+                        <div class="banner-img" style="display: flex; align-items: center; justify-content: center; background: #2d2d44;">
+                            <i class="fas fa-image" style="font-size: 48px; color: #444;"></i>
+                        </div>
+                    <% } %>
+                    
+                    <div class="banner-info">
+                        <div class="banner-title"><%= banner.title || 'Sem título' %></div>
+                        <div class="banner-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> <%= banner.position || 'home' %></span>
+                            <span><i class="fas fa-sort-numeric-down"></i> <%= banner.order || 0 %></span>
+                        </div>
+                    </div>
+                    
+                    <div class="banner-actions">
+                        <form action="/admin/banner/toggle/<%= id %>" method="POST" style="display: contents;">
+                            <button type="submit" class="btn-toggle <%= banner.active ? 'active' : '' %>">
+                                <i class="fas <%= banner.active ? 'fa-eye' : 'fa-eye-slash' %>"></i>
+                                <%= banner.active ? 'On' : 'Off' %>
+                            </button>
+                        </form>
+                        <button class="btn-edit" onclick="openEdit('<%= id %>', '<%= JSON.stringify(banner).replace(/'/g, "\\'") %>')">
+                            <i class="fas fa-pen"></i> Editar
+                        </button>
+                        <form action="/admin/banner/delete/<%= id %>" method="POST" style="display: contents;" onsubmit="return confirm('Excluir este banner?')">
+                            <button type="submit" class="btn-del">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="bannerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Novo Banner</h2>
+                <button class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form action="/admin/banner/add" method="POST" enctype="multipart/form-data" id="bannerForm">
+                <input type="hidden" name="bannerId" id="bannerId">
+                
+                <div class="form-group">
+                    <label class="form-label">Imagem *</label>
+                    <div class="image-upload" id="imgBox" onclick="document.getElementById('imgInput').click()">
+                        <input type="file" id="imgInput" name="banner" accept="image/*" onchange="preview(this)">
+                        <img id="previewImg" style="display: none;">
+                        <i class="fas fa-cloud-upload-alt upload-icon" id="upIcon"></i>
+                        <span class="upload-text" id="upText">Toque para selecionar</span>
+                    </div>
+                    <input type="url" name="imageUrl" id="imgUrl" class="form-input" placeholder="Ou URL da imagem" style="margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input type="text" name="title" id="banTitle" class="form-input" placeholder="Nome do banner">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Link de destino</label>
+                    <input type="url" name="link" id="banLink" class="form-input" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Posição</label>
+                    <div class="position-grid">
+                        <% ['home', 'sidebar', 'header', 'footer'].forEach(pos => { %>
+                            <label class="pos-option" onclick="selectPos(this)" data-pos="<%= pos %>">
+                                <input type="radio" name="position" value="<%= pos %>" <%= pos === 'home' ? 'checked' : '' %>>
+                                <i class="fas fa-<%= pos === 'home' ? 'home' : pos === 'sidebar' ? 'columns' : pos === 'header' ? 'heading' : 'shoe-prints' %>"></i>
+                                <span><%= pos.charAt(0).toUpperCase() + pos.slice(1) %></span>
+                            </label>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ordem (0 = primeiro)</label>
+                    <input type="number" name="order" id="banOrder" class="form-input" value="0" min="0">
+                </div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div style="font-weight: 600;">Banner Ativo</div>
+                        <div style="font-size: 12px; color: #888;">Exibir imediatamente</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="active" id="banActive" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-save"><i class="fas fa-save"></i> Salvar Banner</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentBanner = null;
+        
+        function preview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('previewImg').style.display = 'block';
+                    document.getElementById('upIcon').style.display = 'none';
+                    document.getElementById('upText').style.display = 'none';
+                    document.getElementById('imgBox').classList.add('has-image');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function selectPos(element) {
+            document.querySelectorAll('.pos-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            element.querySelector('input').checked = true;
+        }
+        
+        function openAdd() {
+            document.getElementById('bannerModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Novo Banner';
+            document.getElementById('bannerForm').reset();
+            document.getElementById('bannerId').value = '';
+            document.getElementById('previewImg').style.display = 'none';
+            document.getElementById('upIcon').style.display = 'block';
+            document.getElementById('upText').style.display = 'block';
+            document.getElementById('imgBox').classList.remove('has-image');
+            document.querySelector('.pos-option[data-pos="home"]').click();
+            currentBanner = null;
+        }
+        
+        function openEdit(id, bannerJson) {
+            const banner = JSON.parse(bannerJson);
+            currentBanner = banner;
+            
+            document.getElementById('bannerModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Editar Banner';
+            document.getElementById('bannerId').value = id;
+            document.getElementById('banTitle').value = banner.title || '';
+            document.getElementById('banLink').value = banner.link || '';
+            document.getElementById('banOrder').value = banner.order || 0;
+            document.getElementById('banActive').checked = banner.active;
+            document.getElementById('imgUrl').value = banner.image || '';
+            
+            // Preview da imagem existente
+            if (banner.image) {
+                document.getElementById('previewImg').src = banner.image;
+                document.getElementById('previewImg').style.display = 'block';
+                document.getElementById('upIcon').style.display = 'none';
+                document.getElementById('upText').style.display = 'none';
+                document.getElementById('imgBox').classList.add('has-image');
+            }
+            
+            // Selecionar posição
+            document.querySelectorAll('.pos-option').forEach(el => {
+                if (el.dataset.pos === (banner.position || 'home')) {
+                    selectPos(el);
+                }
+            });
+        }
+        
+        function closeModal() {
+            document.getElementById('bannerModal').classList.remove('active');
+        }
+        
+        // Fechar ao clicar fora
+        document.getElementById('bannerModal').addEventListener('click', e => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+    </script>
+</body>
+</html>

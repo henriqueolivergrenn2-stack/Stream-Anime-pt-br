@@ -1,0 +1,250 @@
+<div class="admin-page">
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <i class="fas fa-cog"></i>
+            <span>Admin</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/admin/animes" class="active"><i class="fas fa-film"></i> Animes</a>
+            <a href="/"><i class="fas fa-arrow-left"></i> Voltar ao Site</a>
+        </nav>
+    </div>
+    
+    <div class="admin-content">
+        <div class="admin-header">
+            <div>
+                <h1><%= (typeof episode !== 'undefined' && episode) ? 'Editar' : 'Adicionar' %> Episódio</h1>
+                <p style="color: #a0a0b0; margin-top: 5px;"><%= anime.title %></p>
+            </div>
+            <a href="/admin/episodes/<%= anime.id %>" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+        
+        <form action="<%= (typeof episode !== 'undefined' && episode) ? '/admin/episode/edit/' + episode.id : '/admin/episode/add/' + anime.id %>" method="POST" class="simple-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Número do Episódio *</label>
+                    <input type="number" name="number" step="0.1" value="<%= (typeof episode !== 'undefined' && episode) ? episode.number : '' %>" required placeholder="Ex: 1 ou 12.5">
+                </div>
+                <div class="form-group">
+                    <label>Título do Episódio</label>
+                    <input type="text" name="title" value="<%= (typeof episode !== 'undefined' && episode) ? episode.title : '' %>" placeholder="Opcional">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>URL do Vídeo *</label>
+                <input type="url" name="videoUrl" value="<%= (typeof episode !== 'undefined' && episode) ? episode.videoUrl : '' %>" required placeholder="https://...">
+                <small style="color: #6b6b7b; display: block; margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i> 
+                    Suporta: YouTube, Google Drive, Blogger, MP4Upload, links diretos MP4/M3U8
+                </small>
+            </div>
+
+            <!-- Campo obrigatório para o player funcionar corretamente -->
+            <div class="form-group">
+                <label>Tipo de Player <small style="color:#6b6b7b;">(escolha ou deixe em Auto)</small></label>
+                <select name="videoType" class="form-control">
+                    <option value="" <%= (typeof episode === 'undefined' || !episode || !episode.videoType) ? 'selected' : '' %>>Auto Detectar</option>
+                    <option value="youtube" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'youtube') ? 'selected' : '' %>>YouTube</option>
+                    <option value="gdrive" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'gdrive') ? 'selected' : '' %>>Google Drive</option>
+                    <option value="blogger" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'blogger') ? 'selected' : '' %>>Blogger</option>
+                    <option value="hls" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'hls') ? 'selected' : '' %>>HLS / M3U8</option>
+                    <option value="mp4" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'mp4') ? 'selected' : '' %>>MP4 Direto</option>
+                    <option value="mp4upload" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'mp4upload') ? 'selected' : '' %>>MP4Upload</option>
+                    <option value="streamsb" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'streamsb') ? 'selected' : '' %>>StreamSB</option>
+                    <option value="doodstream" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'doodstream') ? 'selected' : '' %>>DoodStream</option>
+                    <option value="filemoon" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'filemoon') ? 'selected' : '' %>>Filemoon</option>
+                    <option value="streamtape" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'streamtape') ? 'selected' : '' %>>StreamTape</option>
+                    <option value="vk" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'vk') ? 'selected' : '' %>>VK Video</option>
+                    <option value="okru" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'okru') ? 'selected' : '' %>>OK.ru</option>
+                    <option value="iframe" <%= (typeof episode !== 'undefined' && episode && episode.videoType === 'iframe') ? 'selected' : '' %>>Iframe Genérico</option>
+                </select>
+            </div>
+            
+            <div class="video-types-info">
+                <h4><i class="fas fa-play-circle"></i> Players Suportados:</h4>
+                <ul>
+                    <li><strong>YouTube:</strong> youtube.com/watch?v=...</li>
+                    <li><strong>Google Drive:</strong> drive.google.com/file/d/...</li>
+                    <li><strong>Blogger:</strong> blogger.com/video.g?token=...</li>
+                    <li><strong>MP4/M3U8:</strong> Links diretos</li>
+                </ul>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> <%= (typeof episode !== 'undefined' && episode) ? 'Salvar Alterações' : 'Adicionar Episódio' %>
+                </button>
+                <a href="/admin/episodes/<%= anime.id %>" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    display: flex;
+    min-height: calc(100vh - 70px);
+    padding-top: 70px;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: #1a1a2e;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.admin-logo i {
+    color: #ff4757;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.admin-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    color: #a0a0b0;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background: #ff4757;
+    color: white;
+}
+
+.admin-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 30px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-header h1 {
+    font-size: 2rem;
+}
+
+.simple-form {
+    background: #161625;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 700px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #a0a0b0;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background: #0f0f1a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+}
+
+.form-group select {
+    height: 48px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #ff4757;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.video-types-info {
+    background: #0f0f1a;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.video-types-info h4 {
+    margin-bottom: 10px;
+    color: #ff4757;
+}
+
+.video-types-info ul {
+    list-style: none;
+    color: #a0a0b0;
+}
+
+.video-types-info li {
+    padding: 5px 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+    
+    .admin-page {
+        flex-direction: column;
+    }
+    
+    .admin-content {
+        margin-left: 0;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

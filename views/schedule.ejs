@@ -1,0 +1,56 @@
+<% title = 'Calendário de Lançamentos - ' + config.siteName %>
+
+<section class="schedule-page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendário de Lançamentos</span>
+            </h1>
+            <p class="page-description">Fique por dentro dos próximos episódios</p>
+        </div>
+        
+        <div class="schedule-grid">
+            <% days.forEach(day => { %>
+            <div class="schedule-day <%= day === days[new Date().getDay()] ? 'today' : '' %>">
+                <div class="day-header">
+                    <h3><%= day %></h3>
+                    <% if (day === days[new Date().getDay()]) { %>
+                    <span class="today-badge">Hoje</span>
+                    <% } %>
+                    <span class="day-count"><%= schedule[day].length %> animes</span>
+                </div>
+                
+                <div class="day-animes">
+                    <% if (schedule[day].length > 0) { %>
+                    <% schedule[day].forEach(anime => { %>
+                    <a href="/anime/<%= anime.id %>" class="schedule-anime">
+                        <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>">
+                        <div class="schedule-info">
+                            <h4><%= anime.title %></h4>
+                            <% if (anime.releaseTime) { %>
+                            <span class="release-time">
+                                <i class="fas fa-clock"></i>
+                                <%= anime.releaseTime %>
+                            </span>
+                            <% } %>
+                            <% if (anime.status) { %>
+                            <span class="status <%= anime.status %>">
+                                <%= anime.status === 'ongoing' ? 'Em Lançamento' : 'Completo' %>
+                            </span>
+                            <% } %>
+                        </div>
+                    </a>
+                    <% }) %>
+                    <% } else { %>
+                    <div class="empty-day">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Sem lançamentos</p>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>

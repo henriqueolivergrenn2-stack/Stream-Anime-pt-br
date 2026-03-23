@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Configurações - <%= config.siteName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a;
+            color: #fff;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+        
+        .mobile-header {
+            background: linear-gradient(135deg, <%= config.primaryColor %> 0%, #2f3542 100%);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .save-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2ed573;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            padding: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section-card {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #2d2d44;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: <%= config.primaryColor %>;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a0a0b0;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #2d2d44;
+            border-radius: 12px;
+            background: #0f0f1a;
+            color: #fff;
+            font-size: 16px;
+            -webkit-appearance: none;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: <%= config.primaryColor %>;
+            background: #16162a;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon .form-input {
+            padding-left: 45px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: <%= config.primaryColor %>;
+            font-size: 18px;
+        }
+        
+        .color-picker-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .color-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .color-input {
+            flex: 1;
+        }
+        
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            background: #0f0f1a;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .toggle-group.active {
+            border-color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+        }
+        
+        .toggle-group.warning {
+            border-color: #ffa502;
+            background: rgba(255, 165, 2, 0.1);
+        }
+        
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .toggle-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: #2d2d44;
+        }
+        
+        .toggle-icon.success { background: #2ed573; color: #000; }
+        .toggle-icon.warning { background: #ffa502; color: #000; }
+        .toggle-icon.danger { background: #ff3838; color: #fff; }
+        .toggle-icon.info { background: #3742fa; color: #fff; }
+        
+        .toggle-text {
+            flex: 1;
+        }
+        
+        .toggle-text h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .toggle-text p {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2d2d44;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background: #fff;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: <%= config.primaryColor %>;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .seo-preview {
+            background: #0f0f1a;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid <%= config.primaryColor %>;
+        }
+        
+        .seo-preview-title {
+            color: #3742fa;
+            font-size: 16px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .seo-preview-url {
+            color: #2ed573;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .seo-preview-desc {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .danger-zone {
+            border: 2px solid #ff3838;
+            background: rgba(255, 56, 56, 0.05);
+        }
+        
+        .danger-zone .section-title {
+            color: #ff3838;
+        }
+        
+        .btn-submit {
+            position: fixed;
+            bottom: 20px;
+            left: 15px;
+            right: 15px;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, <%= config.primaryColor %> 0%, #ff6b81 100%);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+            z-index: 99;
+            max-width: 770px;
+            margin: 0 auto;
+        }
+        
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+            
+            .btn-submit {
+                position: static;
+                margin-top: 30px;
+                width: 100%;
+            }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #2d2d44;
+            border-top-color: <%= config.primaryColor %>;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <p>Salvando configurações...</p>
+    </div>
+
+    <header class="mobile-header">
+        <div class="header-content">
+            <a href="/admin" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="header-title">Configurações</h1>
+            <button type="button" class="save-btn" onclick="document.getElementById('settingsForm').submit()">
+                <i class="fas fa-check"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <form id="settingsForm" action="/admin/settings" method="POST" onsubmit="showLoading()">
+            
+            <!-- Informações Básicas -->
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Informações do Site
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nome do Site *</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-globe input-icon"></i>
+                        <input type="text" name="siteName" class="form-input" 
+                               value="<%= config.siteName %>" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Descrição Curta</label>
+                    <input type="text" name="siteDescription" class="form-input" 
+                           value="<%= config.siteDescription || '' %>" 
+                           placeholder="Descrição para SEO e redes sociais">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">URL do Logo</label>
+                    <input type="url" name="siteLogo" class="form-input" 
+                           value="<%= config.siteLogo || '' %>" 
+                           placeholder="/images/logo.png">
+                </div>
+            </div>
+
+            <!-- Aparência -->
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="fas fa-paint-brush"></i>
+                    Aparência
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cor Primária</label>
+                    <div class="color-picker-wrapper">
+                        <div class="color-preview" id="primaryPreview" 
+                             style="background: <%= config.primaryColor %>;"></div>
+                        <input type="color" name="primaryColor" class="form-input color-input" 
+                               value="<%= config.primaryColor %>" 
+                               onchange="updatePreview('primaryPreview', this.value)">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cor Secundária</label>
+                    <div class="color-picker-wrapper">
+                        <div class="color-preview" id="secondaryPreview" 
+                             style="background: <%= config.secondaryColor %>;"></div>
+                        <input type="color" name="secondaryColor" class="form-input color-input" 
+                               value="<%= config.secondaryColor %>" 
+                               onchange="updatePreview('secondaryPreview', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funcionalidades -->
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="fas fa-cogs"></i>
+                    Funcionalidades
+                </div>
+                
+                <div class="toggle-group <%= config.enableAdultContent ? 'active' : '' %>">
+                    <div class="toggle-info">
+                        <div class="toggle-icon danger">🔞</div>
+                        <div class="toggle-text">
+                            <h4>Conteúdo Adulto</h4>
+                            <p>Permitir animes +18 no site</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="enableAdultContent" 
+                               <%= config.enableAdultContent ? 'checked' : '' %>
+                               onchange="toggleGroup(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-group <%= config.adultVerification ? 'active' : '' %>">
+                    <div class="toggle-info">
+                        <div class="toggle-icon warning">🛡️</div>
+                        <div class="toggle-text">
+                            <h4>Verificação de Idade</h4>
+                            <p>Exigir confirmação para conteúdo +18</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="adultVerification" 
+                               <%= config.adultVerification ? 'checked' : '' %>
+                               onchange="toggleGroup(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-group <%= config.registrationsEnabled ? 'active' : '' %>">
+                    <div class="toggle-info">
+                        <div class="toggle-icon success">👤</div>
+                        <div class="toggle-text">
+                            <h4>Novos Registros</h4>
+                            <p>Permitir novos usuários se cadastrarem</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="registrationsEnabled" 
+                               <%= config.registrationsEnabled ? 'checked' : '' %>
+                               onchange="toggleGroup(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-group <%= config.commentsEnabled ? 'active' : '' %>">
+                    <div class="toggle-info">
+                        <div class="toggle-icon info">💬</div>
+                        <div class="toggle-text">
+                            <h4>Sistema de Comentários</h4>
+                            <p>Permitir comentários em animes</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="commentsEnabled" 
+                               <%= config.commentsEnabled ? 'checked' : '' %>
+                               onchange="toggleGroup(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="fas fa-search"></i>
+                    SEO (Otimização Google)
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Título da Página (SEO)</label>
+                    <input type="text" name="seoTitle" class="form-input" 
+                           value="<%= config.seo?.title || '' %>" 
+                           placeholder="AnimeStream Pro - Assista Animes Online HD"
+                           oninput="updateSeoPreview()">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Descrição SEO</label>
+                    <textarea name="seoDescription" class="form-textarea" 
+                              placeholder="Descrição que aparece no Google..."
+                              oninput="updateSeoPreview()"><%= config.seo?.description || '' %></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Palavras-chave</label>
+                    <input type="text" name="seoKeywords" class="form-input" 
+                           value="<%= config.seo?.keywords || '' %>" 
+                           placeholder="anime, online, hd, legendado, assistir">
+                </div>
+                
+                <div class="seo-preview">
+                    <div class="seo-preview-title" id="seoTitle">
+                        <%= config.seo?.title || config.siteName %>
+                    </div>
+                    <div class="seo-preview-url">
+                        www.seusite.com
+                    </div>
+                    <div class="seo-preview-desc" id="seoDesc">
+                        <%= config.seo?.description || config.siteDescription || 'Descrição do site...' %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redes Sociais -->
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="fas fa-share-alt"></i>
+                    Redes Sociais
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Discord</label>
+                    <div class="input-with-icon">
+                        <i class="fab fa-discord input-icon"></i>
+                        <input type="url" name="discord" class="form-input" 
+                               value="<%= config.social?.discord || '' %>" 
+                               placeholder="https://discord.gg/...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Telegram</label>
+                    <div class="input-with-icon">
+                        <i class="fab fa-telegram input-icon"></i>
+                        <input type="url" name="telegram" class="form-input" 
+                               value="<%= config.social?.telegram || '' %>" 
+                               placeholder="https://t.me/...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Twitter / X</label>
+                    <div class="input-with-icon">
+                        <i class="fab fa-twitter input-icon"></i>
+                        <input type="url" name="twitter" class="form-input" 
+                               value="<%= config.social?.twitter || '' %>" 
+                               placeholder="https://twitter.com/...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Instagram</label>
+                    <div class="input-with-icon">
+                        <i class="fab fa-instagram input-icon"></i>
+                        <input type="url" name="instagram" class="form-input" 
+                               value="<%= config.social?.instagram || '' %>" 
+                               placeholder="https://instagram.com/...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zona de Perigo -->
+            <div class="section-card danger-zone">
+                <div class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Zona de Perigo
+                </div>
+                
+                <div style="background: #ff383820; border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                    <p style="font-size: 14px; color: #ff6b81; margin-bottom: 10px;">
+                        <i class="fas fa-info-circle"></i> 
+                        Estas ações não podem ser desfeitas!
+                    </p>
+                    <button type="button" class="btn-submit" style="position: static; background: #ff3838; box-shadow: none;" 
+                            onclick="if(confirm('Isso apagará TODOS os dados! Tem certeza?')) alert('Função não implementada por segurança')">
+                        <i class="fas fa-trash-alt"></i> Resetar Tudo
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> Salvar Configurações
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function updatePreview(id, color) {
+            document.getElementById(id).style.background = color;
+        }
+        
+        function toggleGroup(checkbox) {
+            const group = checkbox.closest('.toggle-group');
+            if (checkbox.checked) {
+                group.classList.add('active');
+            } else {
+                group.classList.remove('active');
+            }
+        }
+        
+        function updateSeoPreview() {
+            const title = document.querySelector('input[name="seoTitle"]').value || document.querySelector('input[name="siteName"]').value;
+            const desc = document.querySelector('textarea[name="seoDescription"]').value || document.querySelector('input[name="siteDescription"]').value;
+            
+            document.getElementById('seoTitle').textContent = title;
+            document.getElementById('seoDesc').textContent = desc || 'Descrição do site...';
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+        
+        // Inicializar previews
+        updateSeoPreview();
+    </script>
+</body>
+</html>

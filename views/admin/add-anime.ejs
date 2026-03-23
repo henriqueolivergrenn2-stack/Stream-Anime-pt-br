@@ -1,0 +1,286 @@
+<% title = 'Adicionar Anime - Admin - ' + config.siteName %>
+
+<section class="admin-section">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <i class="fas fa-cog"></i>
+                <span>Admin</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="/admin" class="admin-nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/animes" class="admin-nav-link active">
+                    <i class="fas fa-film"></i>
+                    <span>Animes</span>
+                </a>
+                <a href="/admin/tags" class="admin-nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Gêneros</span>
+                </a>
+                <a href="/admin/users" class="admin-nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="/admin/banners" class="admin-nav-link">
+                    <i class="fas fa-image"></i>
+                    <span>Banners</span>
+                </a>
+                <a href="/admin/ads" class="admin-nav-link">
+                    <i class="fas fa-ad"></i>
+                    <span>Anúncios</span>
+                </a>
+                <a href="/admin/settings" class="admin-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="/admin/reports" class="admin-nav-link">
+                    <i class="fas fa-flag"></i>
+                    <span>Reportes</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Adicionar Anime</h1>
+                <div class="admin-actions">
+                    <a href="/admin/animes" class="btn btn-outline btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Voltar</span>
+                    </a>
+                </div>
+            </div>
+            
+            <form action="/admin/anime/add" method="POST" enctype="multipart/form-data" class="admin-form">
+                <div class="form-grid">
+                    <!-- Informações Básicas -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informações Básicas
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="title">Título *</label>
+                            <input type="text" id="title" name="title" required placeholder="Nome do anime">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Descrição Curta</label>
+                            <input type="text" id="description" name="description" placeholder="Breve descrição (aparece nas listas)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="synopsis">Sinopse Completa</label>
+                            <textarea id="synopsis" name="synopsis" rows="5" placeholder="Sinopse detalhada do anime"></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rating">Avaliação</label>
+                                <input type="number" id="rating" name="rating" min="0" max="10" step="0.1" placeholder="0-10">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="year">Ano</label>
+                                <input type="number" id="year" name="year" min="1950" max="2099" value="<%= new Date().getFullYear() %>">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="type">Tipo</label>
+                                <select id="type" name="type">
+                                    <option value="tv">TV</option>
+                                    <option value="movie">Filme</option>
+                                    <option value="ova">OVA</option>
+                                    <option value="ona">ONA</option>
+                                    <option value="special">Especial</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status">
+                                    <option value="ongoing">Em Lançamento</option>
+                                    <option value="completed">Completo</option>
+                                    <option value="paused">Pausado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Imagens -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-images"></i>
+                            Imagens
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="cover">Capa (Upload)</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="cover" name="cover" accept="image/*" onchange="previewImage(this, 'coverPreview')">
+                                <div class="file-input-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Clique para fazer upload</span>
+                                </div>
+                            </div>
+                            <div class="image-preview" id="coverPreview"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="coverUrl">Ou URL da Capa</label>
+                            <input type="url" id="coverUrl" name="coverUrl" placeholder="https://exemplo.com/imagem.jpg">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bannerUrl">URL do Banner</label>
+                            <input type="url" id="bannerUrl" name="bannerUrl" placeholder="https://exemplo.com/banner.jpg (opcional)">
+                            <small>Imagem grande para o topo da página do anime</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Detalhes -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-list-alt"></i>
+                            Detalhes
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="studio">Estúdio</label>
+                            <input type="text" id="studio" name="studio" placeholder="Nome do estúdio">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="season">Temporada</label>
+                            <input type="text" id="season" name="season" placeholder="Ex: Primavera 2024">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="episodesCount">Total de Episódios</label>
+                                <input type="number" id="episodesCount" name="episodesCount" min="0" placeholder="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="duration">Duração</label>
+                                <input type="text" id="duration" name="duration" placeholder="Ex: 24 min">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="releaseDay">Dia de Lançamento</label>
+                            <select id="releaseDay" name="releaseDay">
+                                <option value="">Não definido</option>
+                                <option value="Domingo">Domingo</option>
+                                <option value="Segunda">Segunda</option>
+                                <option value="Terça">Terça</option>
+                                <option value="Quarta">Quarta</option>
+                                <option value="Quinta">Quinta</option>
+                                <option value="Sexta">Sexta</option>
+                                <option value="Sábado">Sábado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Gêneros -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-tags"></i>
+                            Gêneros
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Selecione os gêneros</label>
+                            <div class="tags-grid">
+                                <% Object.entries(tags).forEach(([id, tag]) => { %>
+                                <label class="tag-checkbox">
+                                    <input type="checkbox" name="tags" value="<%= id %>">
+                                    <span style="--tag-color: <%= tag.color %>">
+                                        <%= tag.icon %> <%= tag.name %>
+                                    </span>
+                                </label>
+                                <% }) %>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Gêneros Adultos</label>
+                            <div class="tags-grid">
+                                <% Object.entries(adultTags).forEach(([id, tag]) => { %>
+                                <label class="tag-checkbox adult">
+                                    <input type="checkbox" name="tags" value="<%= id %>">
+                                    <span style="--tag-color: <%= tag.color %>">
+                                        <%= tag.icon %> <%= tag.name %>
+                                    </span>
+                                </label>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Opções -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-cog"></i>
+                            Opções
+                        </h3>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="isAdult" name="isAdult">
+                            <label for="isAdult">
+                                <span class="check-icon"><i class="fas fa-check"></i></span>
+                                <span>Conteúdo +18</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="isFeatured" name="isFeatured">
+                            <label for="isFeatured">
+                                <span class="check-icon"><i class="fas fa-check"></i></span>
+                                <span>Destacar na página inicial</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i>
+                        <span>Salvar Anime</span>
+                    </button>
+                    <a href="/admin/animes" class="btn btn-outline btn-lg">
+                        <i class="fas fa-times"></i>
+                        <span>Cancelar</span>
+                    </a>
+                </div>
+            </form>
+        </main>
+    </div>
+</section>
+
+<script>
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            preview.appendChild(img);
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

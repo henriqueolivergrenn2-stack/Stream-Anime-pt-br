@@ -1,0 +1,185 @@
+<% title = 'Painel Admin - ' + config.siteName %>
+
+<section class="admin-section">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <i class="fas fa-cog"></i>
+                <span>Admin</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="/admin" class="admin-nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/animes" class="admin-nav-link">
+                    <i class="fas fa-film"></i>
+                    <span>Animes</span>
+                </a>
+                <a href="/admin/tags" class="admin-nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Gêneros</span>
+                </a>
+                <a href="/admin/users" class="admin-nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="/admin/banners" class="admin-nav-link">
+                    <i class="fas fa-image"></i>
+                    <span>Banners</span>
+                </a>
+                <a href="/admin/ads" class="admin-nav-link">
+                    <i class="fas fa-ad"></i>
+                    <span>Anúncios</span>
+                </a>
+                <a href="/admin/settings" class="admin-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="/admin/reports" class="admin-nav-link">
+                    <i class="fas fa-flag"></i>
+                    <span>Reportes</span>
+                    <% if (stats.pendingReports > 0) { %>
+                    <span class="nav-badge"><%= stats.pendingReports %></span>
+                    <% } %>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="admin-actions">
+                    <a href="/" class="btn btn-outline btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Voltar ao Site</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.animes %></span>
+                        <span class="stat-label">Animes</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.episodes %></span>
+                        <span class="stat-label">Episódios</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.users %></span>
+                        <span class="stat-label">Usuários</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.comments %></span>
+                        <span class="stat-label">Comentários</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.totalViews.toLocaleString() %></span>
+                        <span class="stat-label">Total Views</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon cyan">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number"><%= stats.totalDownloads.toLocaleString() %></span>
+                        <span class="stat-label">Downloads</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="admin-box">
+                <h2 class="box-title">Ações Rápidas</h2>
+                <div class="quick-actions">
+                    <a href="/admin/anime/add" class="quick-action">
+                        <div class="quick-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <span>Adicionar Anime</span>
+                    </a>
+                    <a href="/admin/tags" class="quick-action">
+                        <div class="quick-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <span>Gerenciar Tags</span>
+                    </a>
+                    <a href="/admin/banners" class="quick-action">
+                        <div class="quick-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <span>Editar Banners</span>
+                    </a>
+                    <a href="/admin/settings" class="quick-action">
+                        <div class="quick-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <span>Configurações</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Pending Reports -->
+            <% if (pendingReports && pendingReports.length > 0) { %>
+            <div class="admin-box">
+                <div class="box-header">
+                    <h2 class="box-title">Reportes Pendentes</h2>
+                    <a href="/admin/reports" class="view-all">Ver Todos</a>
+                </div>
+                <div class="reports-list">
+                    <% pendingReports.slice(0, 5).forEach(report => { %>
+                    <div class="report-item">
+                        <div class="report-info">
+                            <span class="report-user"><%= report.username %></span>
+                            <span class="report-reason"><%= report.reason %></span>
+                            <span class="report-date">
+                                <%= new Date(report.createdAt).toLocaleDateString('pt-BR') %>
+                            </span>
+                        </div>
+                        <form action="/admin/report/resolve/<%= report.id %>" method="POST">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+        </main>
+    </div>
+</section>

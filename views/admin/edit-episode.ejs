@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Editar EP<%= episode.number %> - <%= config.siteName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a; color: #fff; line-height: 1.6; padding-bottom: 100px;
+        }
+        .header { 
+            background: <%= config.primaryColor %>; padding: 15px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .back-btn { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            background: rgba(255,255,255,0.2); display: flex; 
+            align-items: center; justify-content: center; color: #fff; text-decoration: none;
+        }
+        .header-info { flex: 1; }
+        .header-info small { display: block; font-size: 12px; opacity: 0.9; }
+        .header-info h1 { font-size: 16px; margin: 0; }
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        .card { 
+            background: #1a1a2e; border-radius: 16px; padding: 20px; 
+            margin-bottom: 15px; border: 1px solid #2d2d44;
+        }
+        .card-title { 
+            font-size: 16px; font-weight: 600; margin-bottom: 15px; 
+            color: <%= config.primaryColor %>; display: flex; align-items: center; gap: 8px;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-label { 
+            display: block; margin-bottom: 6px; font-size: 14px; 
+            color: #a0a0b0; font-weight: 500;
+        }
+        .form-input {
+            width: 100%; padding: 12px 14px; border: 2px solid #2d2d44;
+            border-radius: 10px; background: #0f0f1a; color: #fff; font-size: 16px;
+        }
+        .form-input:focus { outline: none; border-color: <%= config.primaryColor %>; }
+        
+        /* Number control */
+        .number-control {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .number-control input { flex: 1; text-align: center; font-size: 24px; font-weight: 700; }
+        .number-btn {
+            width: 45px; height: 45px; border-radius: 10px;
+            background: #2d2d44; border: none; color: #fff;
+            font-size: 20px; cursor: pointer;
+        }
+        
+        /* Video types */
+        .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .type-option {
+            padding: 15px 5px; background: #0f0f1a; border: 2px solid #2d2d44;
+            border-radius: 10px; text-align: center; cursor: pointer; font-size: 12px;
+        }
+        .type-option i { display: block; font-size: 20px; margin-bottom: 5px; color: <%= config.primaryColor %>; }
+        .type-option.active { border-color: <%= config.primaryColor %>; background: rgba(255,71,87,0.1); }
+        .type-option input { display: none; }
+        
+        /* URL input with paste */
+        .url-box { position: relative; }
+        .url-box input { padding-right: 50px; }
+        .paste-btn {
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+            width: 40px; height: 40px; border-radius: 8px;
+            background: <%= config.primaryColor %>; border: none; color: #fff;
+            cursor: pointer;
+        }
+        
+        /* Preview */
+        .preview-box {
+            background: #0f0f1a; border-radius: 10px; padding: 15px; margin-top: 15px;
+        }
+        .preview-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+        .preview-frame {
+            width: 100%; height: 200px; border: none; border-radius: 8px; background: #000;
+        }
+        
+        .detected {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; background: #2ed573; color: #000;
+            border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 10px;
+        }
+        
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1a1a2e; padding: 15px; border-top: 1px solid #2d2d44;
+            display: flex; gap: 10px; z-index: 99;
+        }
+        .btn {
+            flex: 1; padding: 14px; border: none; border-radius: 10px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: <%= config.primaryColor %>; color: #fff; }
+        .btn-secondary { background: #2d2d44; color: #fff; }
+        .btn-danger { background: #ff3838; color: #fff; }
+        
+        @media (min-width: 768px) {
+            .bottom-bar { position: static; background: transparent; border: none; margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/admin/episodes/<%= anime.id %>" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="header-info">
+            <small><%= anime.title %></small>
+            <h1>Editar Episódio <%= episode.number %></h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="mainForm" action="/admin/episode/edit/<%= episode.id %>" method="POST">
+            
+            <!-- Número -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-hashtag"></i> Número do Episódio</div>
+                <div class="number-control">
+                    <button type="button" class="number-btn" onclick="changeNum(-1)"><i class="fas fa-minus"></i></button>
+                    <input type="number" name="number" id="epNumber" value="<%= episode.number %>" step="0.5" class="form-input" required>
+                    <button type="button" class="number-btn" onclick="changeNum(1)"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <!-- Título -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-heading"></i> Título (Opcional)</div>
+                <input type="text" name="title" class="form-input" value="<%= episode.title || '' %>" placeholder="Título do episódio">
+            </div>
+
+            <!-- Tipo de Vídeo -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-play-circle"></i> Tipo de Player</div>
+                <div class="type-grid">
+                    <% const types = ['mp4', 'youtube', 'gdrive', 'blogger', 'hls', 'mp4upload', 'streamsb', 'doodstream', 'streamtape', 'iframe']; %>
+                    <% const icons = {
+                        'mp4': 'file-video', 'youtube': 'youtube', 'gdrive': 'google-drive',
+                        'blogger': 'blogger', 'hls': 'broadcast-tower', 'mp4upload': 'cloud-upload-alt',
+                        'streamsb': 'play', 'doodstream': 'play-circle', 'streamtape': 'tape', 'iframe': 'code'
+                    }; %>
+                    <% types.forEach(type => { %>
+                        <label class="type-option <%= episode.videoType === type ? 'active' : '' %>" onclick="selectType(this, '<%= type %>')">
+                            <input type="radio" name="videoType" value="<%= type %>" <%= episode.videoType === type ? 'checked' : '' %>>
+                            <i class="fas fa-<%= icons[type] || 'play' %>"></i>
+                            <%= type.toUpperCase() %>
+                        </label>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- URL -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-link"></i> URL do Vídeo</div>
+                <div class="url-box">
+                    <input type="url" name="videoUrl" id="videoUrl" class="form-input" value="<%= episode.videoUrl %>" 
+                           placeholder="Cole a URL aqui..." required oninput="detectType(this.value)">
+                    <button type="button" class="paste-btn" onclick="pasteUrl()"><i class="fas fa-paste"></i></button>
+                </div>
+                <div id="detectedBadge" class="detected" style="display: <%= episode.videoType ? 'inline-flex' : 'none' %>;">
+                    <i class="fas fa-check-circle"></i> Tipo: <span id="typeText"><%= episode.videoType %></span>
+                </div>
+                
+                <div class="preview-box">
+                    <div class="preview-header">
+                        <span style="font-size: 14px; color: #888;">Preview</span>
+                        <button type="button" class="btn btn-secondary" style="width: auto; padding: 8px 16px; font-size: 13px;" onclick="testVideo()">
+                            <i class="fas fa-play"></i> Testar
+                        </button>
+                    </div>
+                    <iframe id="previewFrame" class="preview-frame" src=""></iframe>
+                </div>
+            </div>
+
+            <!-- Download -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-download"></i> Download (Opcional)</div>
+                <input type="url" name="downloadUrl" class="form-input" value="<%= episode.downloadUrl || '' %>" placeholder="Link direto para download">
+            </div>
+
+            <!-- Extra -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-info-circle"></i> Informações Extra</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" name="duration" class="form-input" value="<%= episode.duration || '' %>" placeholder="Duração (24:00)">
+                    <input type="url" name="thumbnail" class="form-input" value="<%= episode.thumbnail || '' %>" placeholder="URL Thumbnail">
+                </div>
+            </div>
+
+            <div class="bottom-bar">
+                <a href="/admin/episodes/<%= anime.id %>" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar</button>
+            </div>
+        </form>
+
+        <form action="/admin/episode/delete/<%= episode.id %>" method="POST" 
+              onsubmit="return confirm('Excluir este episódio?')"
+              style="margin-top: 20px;">
+            <button type="submit" class="btn btn-danger" style="width: 100%;">
+                <i class="fas fa-trash"></i> Excluir Episódio
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function changeNum(delta) {
+            const input = document.getElementById('epNumber');
+            input.value = (parseFloat(input.value) || 0) + delta;
+        }
+        
+        function selectType(element, type) {
+            document.querySelectorAll('.type-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            element.querySelector('input').checked = true;
+        }
+        
+        function detectType(url) {
+            const patterns = {
+                'youtube.com': 'youtube', 'youtu.be': 'youtube',
+                'drive.google.com': 'gdrive',
+                'blogger.com': 'blogger', 'blogspot.com': 'blogger',
+                '.m3u8': 'hls', 'anivideo': 'hls',
+                'mp4upload.com': 'mp4upload',
+                'streamsb.net': 'streamsb', 'sbembed.com': 'streamsb',
+                'dood.ws': 'doodstream', 'dood.to': 'doodstream',
+                'streamtape.com': 'streamtape',
+                'vk.com': 'vk', 'ok.ru': 'okru'
+            };
+            
+            for (let [pattern, type] of Object.entries(patterns)) {
+                if (url.toLowerCase().includes(pattern)) {
+                    document.getElementById('detectedBadge').style.display = 'inline-flex';
+                    document.getElementById('typeText').textContent = type;
+                    // Selecionar visualmente
+                    document.querySelectorAll('.type-option').forEach(el => {
+                        el.classList.remove('active');
+                        if (el.textContent.trim().toLowerCase() === type) {
+                            el.classList.add('active');
+                            el.querySelector('input').checked = true;
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+        
+        async function pasteUrl() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const input = document.getElementById('videoUrl');
+                input.value = text;
+                detectType(text);
+            } catch(e) {
+                alert('Não foi possível colar');
+            }
+        }
+        
+        function testVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const type = document.querySelector('input[name="videoType"]:checked')?.value || 'mp4';
+            const frame = document.getElementById('previewFrame');
+            
+            // Processar URL para embed
+            let embedUrl = url;
+            if (type === 'youtube') {
+                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s?]+)/);
+                if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+            } else if (type === 'gdrive') {
+                const match = url.match(/\/d\/([^/]+)/);
+                if (match) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+            }
+            
+            frame.src = embedUrl;
+        }
+        
+        // Testar vídeo inicial se existir
+        <% if (episode.videoUrl) { %>
+        window.onload = () => testVideo();
+        <% } %>
+    </script>
+</body>
+</html>

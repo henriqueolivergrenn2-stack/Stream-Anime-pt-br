@@ -1,0 +1,52 @@
+<% title = 'Gêneros - ' + config.siteName %>
+
+<section class="genres-page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-tags"></i>
+                <span>Explorar por Gênero</span>
+            </h1>
+            <p class="page-description">Encontre animes do seu gênero favorito</p>
+        </div>
+        
+        <!-- Regular Tags -->
+        <div class="genres-section">
+            <h2 class="section-subtitle">Gêneros Populares</h2>
+            <div class="genres-grid-large">
+                <% Object.entries(tags).forEach(([id, tag]) => { %>
+                <a href="/search?tag=<%= id %>" class="genre-card-large" style="--genre-color: <%= tag.color %>">
+                    <div class="genre-icon-large"><%= tag.icon %></div>
+                    <div class="genre-info">
+                        <h3><%= tag.name %></h3>
+                        <span class="genre-count"><%= tagCounts[id] || 0 %> animes</span>
+                    </div>
+                    <i class="fas fa-arrow-right genre-arrow"></i>
+                </a>
+                <% }) %>
+            </div>
+        </div>
+        
+        <!-- Adult Tags -->
+        <% if (Object.keys(adultTags).length > 0 && user && user.isAdult) { %>
+        <div class="genres-section adult-section">
+            <h2 class="section-subtitle">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Conteúdo Adulto</span>
+            </h2>
+            <div class="genres-grid-large">
+                <% Object.entries(adultTags).forEach(([id, tag]) => { %>
+                <a href="/search?tag=<%= id %>" class="genre-card-large adult" style="--genre-color: <%= tag.color %>">
+                    <div class="genre-icon-large"><%= tag.icon %></div>
+                    <div class="genre-info">
+                        <h3><%= tag.name %></h3>
+                        <span class="genre-count"><%= tagCounts[id] || 0 %> animes</span>
+                    </div>
+                    <i class="fas fa-arrow-right genre-arrow"></i>
+                </a>
+                <% }) %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</section>

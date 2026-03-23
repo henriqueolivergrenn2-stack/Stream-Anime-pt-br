@@ -1,0 +1,86 @@
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <i class="fas fa-play-circle"></i>
+                    <span><%= config.siteName %></span>
+                </a>
+                <p class="footer-description">
+                    <%= config.siteDescription %>
+                </p>
+                <div class="footer-social">
+                    <% if (config.social?.discord) { %>
+                    <a href="<%= config.social.discord %>" target="_blank" class="social-link discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <% } %>
+                    <% if (config.social?.telegram) { %>
+                    <a href="<%= config.social.telegram %>" target="_blank" class="social-link telegram">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <% } %>
+                    <% if (config.social?.twitter) { %>
+                    <a href="<%= config.social.twitter %>" target="_blank" class="social-link twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <% } %>
+                    <% if (config.social?.instagram) { %>
+                    <a href="<%= config.social.instagram %>" target="_blank" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/genres">Gêneros</a></li>
+                        <li><a href="/schedule">Calendário</a></li>
+                        <li><a href="/search">Buscar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Usuário</h4>
+                    <ul>
+                        <% if (user && user.userId) { %>
+                        <li><a href="/profile">Meu Perfil</a></li>
+                        <li><a href="/history">Histórico</a></li>
+                        <li><a href="/favorites">Favoritos</a></li>
+                        <li><a href="/watchlist">Watchlist</a></li>
+                        <% } else { %>
+                        <li><a href="/login">Entrar</a></li>
+                        <li><a href="/register">Cadastrar</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/terms">Termos de Uso</a></li>
+                        <li><a href="/privacy">Privacidade</a></li>
+                        <li><a href="/dmca">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; <%= new Date().getFullYear() %> <%= config.siteName %>. Todos os direitos reservados.</p>
+            <p class="footer-credit">Feito com <i class="fas fa-heart"></i> para fãs de anime</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+    <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- Scripts -->
+<script src="/js/main.js"></script>

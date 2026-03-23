@@ -1,0 +1,63 @@
+{
+  "acao": {
+    "id": "acao",
+    "name": "Ação",
+    "color": "#ff4757"
+  },
+  "aventura": {
+    "id": "aventura",
+    "name": "Aventura",
+    "color": "#2ed573",
+    "icon": "🏷️"
+  },
+  "comedia": {
+    "id": "comedia",
+    "name": "Comédia",
+    "color": "#ffa502"
+  },
+  "drama": {
+    "id": "drama",
+    "name": "Drama",
+    "color": "#747d8c"
+  },
+  "ecchi": {
+    "id": "ecchi",
+    "name": "Ecchi",
+    "color": "#ff6b81"
+  },
+  "fantasia": {
+    "id": "fantasia",
+    "name": "Fantasia",
+    "color": "#a55eea"
+  },
+  "harem": {
+    "id": "harem",
+    "name": "Harem",
+    "color": "#ff9ff3"
+  },
+  "isekai": {
+    "id": "isekai",
+    "name": "Isekai",
+    "color": "#5f27cd"
+  },
+  "romance": {
+    "id": "romance",
+    "name": "Romance",
+    "color": "#ff6b81"
+  },
+  "scifi": {
+    "id": "scifi",
+    "name": "Sci-Fi",
+    "color": "#00d2d3"
+  },
+  "shounen": {
+    "id": "shounen",
+    "name": "Shounen",
+    "color": "#ff4757"
+  },
+  "terror": {
+    "id": "terror",
+    "name": "Terror",
+    "color": "#2f3542"
+  }
+}

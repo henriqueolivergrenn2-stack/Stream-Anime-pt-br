@@ -1,0 +1,26 @@
+{
+  "hentai": {
+    "id": "hentai",
+    "name": "Hentai",
+    "color": "#ff3838",
+    "icon": "🔞"
+  },
+  "yaoi-adult": {
+    "id": "yaoi-adult",
+    "name": "Yaoi (+18)",
+    "color": "#54a0ff",
+    "icon": "🔞"
+  },
+  "yuri-adult": {
+    "id": "yuri-adult",
+    "name": "Yuri (+18)",
+    "color": "#ff9ff3",
+    "icon": "🔞"
+  },
+  "ecchi-hard": {
+    "id": "ecchi-hard",
+    "name": "Ecchi Hard",
+    "color": "#ff6b81",
+    "icon": "🔞"
+  }
+}

@@ -1,0 +1,160 @@
+<% title = 'Conteúdo +18 - ' + config.siteName %>
+
+<!-- Adult Warning Banner -->
+<section class="adult-banner">
+    <div class="container">
+        <div class="adult-banner-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Área restrita para maiores de 18 anos</span>
+        </div>
+    </div>
+</section>
+
+<!-- New Episodes +18 -->
+<% if (Object.keys(newEpisodes).length > 0) { %>
+<section class="content-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                <span>Episódios Novos</span>
+            </h2>
+            <span class="badge badge-adult">+18</span>
+        </div>
+        <div class="content-grid grid-6">
+            <% Object.entries(newEpisodes).slice(0, 12).forEach(([id, item]) => { %>
+            <div class="anime-card adult-card">
+                <a href="/watch/<%= id %>" class="card-link">
+                    <div class="card-image">
+                        <img src="<%= item.anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= item.anime.title %>" loading="lazy">
+                        <div class="card-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="episode-badge">EP <%= item.episode.number %></div>
+                        <div class="adult-overlay">+18</div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title"><%= item.anime.title %></h3>
+                        <p class="card-meta">
+                            <span><i class="fas fa-play-circle"></i> Ep <%= item.episode.number %></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- Popular Adult Animes -->
+<% if (popularAnimes.length > 0) { %>
+<section class="content-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i>
+                <span>Mais Vistos</span>
+            </h2>
+        </div>
+        <div class="content-slider">
+            <button class="slider-arrow slider-prev" onclick="slideContent(this, -1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="content-row">
+                <% popularAnimes.forEach(([id, anime]) => { %>
+                <div class="anime-card adult-card">
+                    <a href="/anime/<%= id %>" class="card-link">
+                        <div class="card-image">
+                            <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>" loading="lazy">
+                            <div class="card-overlay">
+                                <div class="play-btn">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="adult-overlay">+18</div>
+                            <% if (anime.rating) { %>
+                            <div class="rating-badge">
+                                <i class="fas fa-star"></i>
+                                <%= anime.rating.toFixed(1) %>
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title"><%= anime.title %></h3>
+                            <p class="card-meta">
+                                <span><i class="fas fa-eye"></i> <%= (anime.views || 0).toLocaleString() %> views</span>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <% }) %>
+            </div>
+            <button class="slider-arrow slider-next" onclick="slideContent(this, 1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- All Adult Animes -->
+<section class="content-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i>
+                <span>Todos os Animes +18</span>
+            </h2>
+        </div>
+        
+        <!-- Adult Tags Filter -->
+        <div class="filter-tags">
+            <a href="/adult" class="filter-tag active">Todos</a>
+            <% Object.entries(adultTags).forEach(([id, tag]) => { %>
+            <a href="/search?tag=<%= id %>" class="filter-tag adult-tag" style="--tag-color: <%= tag.color %>">
+                <%= tag.icon %> <%= tag.name %>
+            </a>
+            <% }) %>
+        </div>
+        
+        <div class="content-grid grid-6">
+            <% allAdultAnimes.forEach(([id, anime]) => { %>
+            <div class="anime-card adult-card">
+                <a href="/anime/<%= id %>" class="card-link">
+                    <div class="card-image">
+                        <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>" loading="lazy">
+                        <div class="card-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="adult-overlay">+18</div>
+                        <% if (anime.rating) { %>
+                        <div class="rating-badge">
+                            <i class="fas fa-star"></i>
+                            <%= anime.rating.toFixed(1) %>
+                        </div>
+                        <% } %>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title"><%= anime.title %></h3>
+                        <p class="card-meta">
+                            <% if (anime.year) { %>
+                            <span><i class="fas fa-calendar"></i> <%= anime.year %></span>
+                            <% } %>
+                            <% if (anime.status) { %>
+                            <span class="status <%= anime.status %>">
+                                <%= anime.status === 'ongoing' ? 'Em Lançamento' : 'Completo' %>
+                            </span>
+                            <% } %>
+                        </p>
+                    </div>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>

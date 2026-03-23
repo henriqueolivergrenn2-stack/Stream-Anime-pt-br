@@ -1,0 +1,66 @@
+<% title = 'Histórico - ' + config.siteName %>
+
+<section class="history-page">
+    <div class="container">
+        <div class="page-header-with-actions">
+            <h1>
+                <i class="fas fa-history"></i>
+                <span>Histórico de Visualização</span>
+            </h1>
+            <% if (history && history.length > 0) { %>
+            <form action="/history/clear" method="POST" onsubmit="return confirm('Tem certeza que deseja limpar todo o histórico?')">
+                <button type="submit" class="clear-btn">
+                    <i class="fas fa-trash"></i>
+                    <span>Limpar Histórico</span>
+                </button>
+            </form>
+            <% } %>
+        </div>
+        
+        <% if (history && history.length > 0) { %>
+        <div class="history-list">
+            <% history.forEach(item => { %>
+            <div class="history-item">
+                <div class="history-thumb">
+                    <img src="<%= item.anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= item.anime.title %>">
+                </div>
+                <div class="history-info">
+                    <h3>
+                        <a href="/anime/<%= item.anime.id %>"><%= item.anime.title %></a>
+                    </h3>
+                    <div class="history-meta">
+                        <span>
+                            <i class="fas fa-play-circle"></i>
+                            Episódio <%= item.episode.number %>
+                            <% if (item.episode.title) { %>
+                            - <%= item.episode.title %>
+                            <% } %>
+                        </span>
+                        <span>
+                            <i class="fas fa-clock"></i>
+                            Assistido em <%= new Date(item.watchedAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                        </span>
+                    </div>
+                </div>
+                <div class="history-actions">
+                    <a href="/watch/<%= item.episode.id %>" class="continue-btn">
+                        <i class="fas fa-play"></i>
+                        <span>Continuar</span>
+                    </a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <div class="empty-state">
+            <i class="fas fa-history"></i>
+            <h2>Histórico vazio</h2>
+            <p>Você ainda não assistiu nenhum episódio.</p>
+            <a href="/" class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-home"></i>
+                <span>Explorar Animes</span>
+            </a>
+        </div>
+        <% } %>
+    </div>
+</section>

@@ -1,0 +1,236 @@
+<div class="admin-page">
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <i class="fas fa-cog"></i>
+            <span>Admin</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/admin/animes" class="active"><i class="fas fa-film"></i> Animes</a>
+            <a href="/"><i class="fas fa-arrow-left"></i> Voltar ao Site</a>
+        </nav>
+    </div>
+    
+    <div class="admin-content">
+        <div class="admin-header">
+            <div>
+                <h1>Episódios</h1>
+                <p style="color: #a0a0b0; margin-top: 5px;"><%= anime.title %></p>
+            </div>
+            <div class="header-actions">
+                <a href="/admin/episode/add/<%= anime.id %>" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Adicionar Episódio
+                </a>
+                <a href="/admin/animes" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+        
+        <div class="episodes-list-admin">
+            <% if (episodes.length > 0) { %>
+                <% episodes.forEach(([id, episode]) => { %>
+                <div class="episode-card-admin">
+                    <div class="episode-number-admin">
+                        <%= episode.number %>
+                    </div>
+                    <div class="episode-info-admin">
+                        <h4><%= episode.title || 'Episódio ' + episode.number %></h4>
+                        <p class="episode-url"><%= episode.videoUrl.substring(0, 50) %>...</p>
+                    </div>
+                    <div class="episode-actions-admin">
+                        <a href="/admin/episode/edit/<%= id %>" class="btn btn-sm btn-primary" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="/admin/episode/delete/<%= id %>" method="POST" style="display:inline;" onsubmit="return confirm('Excluir este episódio?')">
+                            <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-play-circle"></i>
+                    <p>Nenhum episódio adicionado ainda.</p>
+                    <a href="/admin/episode/add/<%= anime.id %>" class="btn btn-primary" style="margin-top: 15px;">
+                        <i class="fas fa-plus"></i> Adicionar Primeiro Episódio
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    display: flex;
+    min-height: calc(100vh - 70px);
+    padding-top: 70px;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: #1a1a2e;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.admin-logo i {
+    color: #ff4757;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.admin-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    color: #a0a0b0;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background: #ff4757;
+    color: white;
+}
+
+.admin-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 30px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-header h1 {
+    font-size: 2rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.episodes-list-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.episode-card-admin {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #161625;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.episode-card-admin:hover {
+    background: #1a1a2e;
+}
+
+.episode-number-admin {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff4757, #e04050);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.episode-info-admin {
+    flex: 1;
+}
+
+.episode-info-admin h4 {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.episode-url {
+    color: #6b6b7b;
+    font-size: 0.85rem;
+}
+
+.episode-actions-admin {
+    display: flex;
+    gap: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #161625;
+    border-radius: 12px;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #ff4757;
+    margin-bottom: 20px;
+}
+
+.empty-state p {
+    color: #a0a0b0;
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+    
+    .admin-page {
+        flex-direction: column;
+    }
+    
+    .admin-content {
+        margin-left: 0;
+    }
+    
+    .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .episode-card-admin {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>

@@ -1,0 +1,21 @@
+{
+  "siteName": "AnimeStreams",
+  "siteDescription": "Assista animes online em HD",
+  "enableAdultContent": true,
+  "primaryColor": "#000000",
+  "secondaryColor": "#000000",
+  "adultVerification": true,
+  "registrationsEnabled": true,
+  "commentsEnabled": true,
+  "seo": {
+    "title": "",
+    "description": "",
+    "keywords": ""
+  },
+  "social": {
+    "discord": "",
+    "telegram": "",
+    "twitter": "",
+    "instagram": ""
+  }
+}

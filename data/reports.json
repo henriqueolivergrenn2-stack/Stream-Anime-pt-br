@@ -1,0 +1,22 @@
+{
+  "5c3b6b44-3c42-4e97-b301-d77c233a031a": {
+    "id": "5c3b6b44-3c42-4e97-b301-d77c233a031a",
+    "animeId": "e3545c38-bbd5-4ca8-868d-79f3cce53f90",
+    "episodeId": "7873014c-cc20-4f21-a2fa-95d6b3dbd5bf",
+    "reason": "1",
+    "userId": "e38cbf46-f0d8-4f62-aabc-2eb4f1279cb7",
+    "username": "admin",
+    "createdAt": "2026-03-17T02:21:12.670Z",
+    "resolved": false
+  },
+  "bba0ecaa-dc66-4916-8496-cd6fc6a60862": {
+    "id": "bba0ecaa-dc66-4916-8496-cd6fc6a60862",
+    "animeId": "e3545c38-bbd5-4ca8-868d-79f3cce53f90",
+    "episodeId": "59e3eff7-8588-48de-96d7-00103f2998ba",
+    "reason": "1",
+    "userId": "e38cbf46-f0d8-4f62-aabc-2eb4f1279cb7",
+    "username": "admin",
+    "createdAt": "2026-03-17T03:36:57.268Z",
+    "resolved": false
+  }
+}

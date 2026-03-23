@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tags - <%= config.siteName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a; color: #fff; line-height: 1.6; padding-bottom: 100px;
+        }
+        .header { 
+            background: <%= config.primaryColor %>; padding: 15px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header h1 { font-size: 20px; }
+        .add-btn { 
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #2ed573; border: none; color: #fff;
+            font-size: 20px; cursor: pointer;
+        }
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        
+        .section-title { 
+            font-size: 13px; text-transform: uppercase; color: #888;
+            margin: 25px 0 15px; font-weight: 600;
+        }
+        
+        .tags-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .tag-card {
+            background: #1a1a2e; border-radius: 16px; padding: 15px;
+            border: 2px solid #2d2d44; display: flex; flex-direction: column;
+            align-items: center; gap: 10px; position: relative;
+        }
+        .tag-card.adult { border-color: #ff3838; background: rgba(255,56,56,0.05); }
+        .tag-icon {
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+        .tag-name { font-weight: 600; font-size: 14px; text-align: center; }
+        .tag-actions {
+            display: flex; gap: 8px; width: 100%;
+        }
+        .tag-actions button, .tag-actions a {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 13px; cursor: pointer; text-decoration: none;
+            text-align: center; color: #fff;
+        }
+        .btn-edit { background: #3742fa; }
+        .btn-del { background: #ff3838; }
+        
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9); z-index: 1000; align-items: flex-end;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #1a1a2e; width: 100%; max-width: 500px;
+            border-radius: 24px 24px 0 0; padding: 25px;
+            animation: up 0.3s ease;
+        }
+        @keyframes up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 { font-size: 20px; }
+        .close-modal {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #0f0f1a; border: none; color: #fff; cursor: pointer;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-label { 
+            display: block; margin-bottom: 6px; font-size: 14px; color: #a0a0b0;
+        }
+        .form-input {
+            width: 100%; padding: 12px 14px; border: 2px solid #2d2d44;
+            border-radius: 10px; background: #0f0f1a; color: #fff; font-size: 16px;
+        }
+        .color-row { display: flex; gap: 10px; align-items: center; }
+        .color-row input[type="color"] { width: 60px; height: 45px; border: none; border-radius: 10px; }
+        
+        .icons-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-top: 10px; }
+        .icon-btn {
+            aspect-ratio: 1; border: 2px solid #2d2d44; border-radius: 10px;
+            background: #0f0f1a; font-size: 20px; cursor: pointer;
+        }
+        .icon-btn.selected { border-color: <%= config.primaryColor %>; background: rgba(255,71,87,0.2); }
+        
+        .toggle-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; background: #0f0f1a; border-radius: 10px; margin: 15px 0;
+        }
+        .toggle-switch { position: relative; width: 50px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: #2d2d44; transition: .3s; border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px;
+            left: 4px; bottom: 4px; background: #fff; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background: #ff3838; }
+        input:checked + .slider:before { transform: translateX(22px); }
+        
+        .btn-save {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            background: <%= config.primaryColor %>; color: #fff;
+            font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        }
+        
+        .empty { text-align: center; padding: 40px; color: #666; }
+        .empty i { font-size: 48px; margin-bottom: 15px; color: #2d2d44; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Gêneros & Tags</h1>
+        <button class="add-btn" onclick="openAdd()"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <div class="container">
+        <!-- Tags Normais -->
+        <div class="section-title">Gêneros Padrão</div>
+        <% if (Object.keys(tags).length === 0) { %>
+            <div class="empty"><i class="fas fa-tags"></i><p>Nenhuma tag</p></div>
+        <% } else { %>
+            <div class="tags-grid">
+                <% Object.entries(tags).forEach(([id, tag]) => { %>
+                    <div class="tag-card">
+                        <div class="tag-icon" style="background: <%= tag.color %>20; color: <%= tag.color %>">
+                            <%= tag.icon %>
+                        </div>
+                        <div class="tag-name"><%= tag.name %></div>
+                        <div class="tag-actions">
+                            <button class="btn-edit" onclick="openEdit('<%= id %>', '<%= tag.name %>', '<%= tag.color %>', '<%= tag.icon %>', false)">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <form action="/admin/tag/delete/<%= id %>" method="POST" style="flex: 1;" onsubmit="return confirm('Excluir <%= tag.name %>?')">
+                                <button type="submit" class="btn-del"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <!-- Adult Tags -->
+        <% if (Object.keys(adultTags).length > 0) { %>
+            <div class="section-title" style="color: #ff3838;">Conteúdo Adulto (+18)</div>
+            <div class="tags-grid">
+                <% Object.entries(adultTags).forEach(([id, tag]) => { %>
+                    <div class="tag-card adult">
+                        <div class="tag-icon" style="background: <%= tag.color %>20; color: <%= tag.color %>">
+                            <%= tag.icon %>
+                        </div>
+                        <div class="tag-name"><%= tag.name %></div>
+                        <div class="tag-actions">
+                            <button class="btn-edit" onclick="openEdit('<%= id %>', '<%= tag.name %>', '<%= tag.color %>', '<%= tag.icon %>', true)">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <form action="/admin/tag/delete/<%= id %>" method="POST" style="flex: 1;" onsubmit="return confirm('Excluir <%= tag.name %>?')">
+                                <button type="submit" class="btn-del"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Modal Add/Edit -->
+    <div class="modal" id="tagModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nova Tag</h2>
+                <button class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form action="/admin/tag/add" method="POST" id="tagForm">
+                <!-- ID hidden para edição -->
+                <input type="hidden" name="originalId" id="originalId">
+                
+                <div class="form-group">
+                    <label class="form-label">Nome *</label>
+                    <input type="text" name="name" id="tagName" class="form-input" placeholder="Ex: Ação" required oninput="generateId(this.value)">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ID (para URL) *</label>
+                    <input type="text" name="id" id="tagId" class="form-input" placeholder="acao" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cor</label>
+                    <div class="color-row">
+                        <input type="color" id="colorPicker" name="color" value="#ff4757" oninput="document.getElementById('colorText').value = this.value">
+                        <input type="text" id="colorText" class="form-input" value="#ff4757" oninput="document.getElementById('colorPicker').value = this.value">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ícone</label>
+                    <input type="hidden" name="icon" id="selectedIcon" value="🏷️">
+                    <div class="icons-grid" id="iconGrid"></div>
+                </div>
+                
+                <div class="toggle-row">
+                    <div>
+                        <div style="font-weight: 600;">Conteúdo Adulto</div>
+                        <div style="font-size: 12px; color: #888;">+18</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="isAdult" id="isAdult">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-save"><i class="fas fa-save"></i> Salvar Tag</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const icons = ['🏷️','⚔️','🗺️','😂','🎭','💋','🎒','⚽','🔮','💕','🌀','✨','🤖','🔍','💘','🚀','🌸','🔥','👻','😰','💀','🌈','🌺','🎯','💎','🎪'];
+        
+        // Criar grid de ícones
+        const grid = document.getElementById('iconGrid');
+        icons.forEach(icon => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'icon-btn';
+            btn.textContent = icon;
+            btn.onclick = () => selectIcon(btn, icon);
+            grid.appendChild(btn);
+        });
+        
+        function selectIcon(btn, icon) {
+            document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('selectedIcon').value = icon;
+        }
+        
+        // Selecionar primeiro por padrão
+        selectIcon(grid.children[0], icons[0]);
+        
+        function generateId(name) {
+            if (!document.getElementById('originalId').value) {
+                const id = name.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]/g, '');
+                document.getElementById('tagId').value = id;
+            }
+        }
+        
+        function openAdd() {
+            document.getElementById('tagModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Nova Tag';
+            document.getElementById('tagForm').reset();
+            document.getElementById('originalId').value = '';
+            selectIcon(grid.children[0], icons[0]);
+        }
+        
+        function openEdit(id, name, color, icon, isAdult) {
+            document.getElementById('tagModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Editar Tag';
+            document.getElementById('originalId').value = id;
+            document.getElementById('tagId').value = id;
+            document.getElementById('tagName').value = name;
+            document.getElementById('colorPicker').value = color;
+            document.getElementById('colorText').value = color;
+            document.getElementById('isAdult').checked = isAdult;
+            
+            // Selecionar ícone
+            document.querySelectorAll('.icon-btn').forEach(btn => {
+                if (btn.textContent === icon) selectIcon(btn, icon);
+            });
+        }
+        
+        function closeModal() {
+            document.getElementById('tagModal').classList.remove('active');
+        }
+        
+        // Fechar ao clicar fora
+        document.getElementById('tagModal').addEventListener('click', e => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+    </script>
+</body>
+</html>

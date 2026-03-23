@@ -1,0 +1,183 @@
+<% title = (query ? 'Busca: ' + query + ' - ' : 'Buscar Animes - ') + config.siteName %>
+
+<section class="search-section">
+    <div class="container">
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1 class="search-title">
+                <% if (query) { %>
+                <i class="fas fa-search"></i>
+                <span>Resultados para "<%= query %>"</span>
+                <span class="result-count">(<%= results.length %> encontrados)</span>
+                <% } else { %>
+                <i class="fas fa-search"></i>
+                <span>Buscar Animes</span>
+                <% } %>
+            </h1>
+            
+            <!-- Search Form -->
+            <form action="/search" method="GET" class="search-form-large">
+                <div class="search-input-group">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        name="q" 
+                        value="<%= query %>"
+                        placeholder="Buscar por título, gênero, estúdio..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="btn btn-primary">
+                        <span>Buscar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label>Gênero:</label>
+                <select name="tag" onchange="applyFilter('tag', this.value)">
+                    <option value="">Todos</option>
+                    <% Object.entries(tags).forEach(([id, tag]) => { %>
+                    <option value="<%= id %>" <%= tagFilter === id ? 'selected' : '' %>><%= tag.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Status:</label>
+                <select name="status" onchange="applyFilter('status', this.value)">
+                    <option value="">Todos</option>
+                    <option value="ongoing" <%= statusFilter === 'ongoing' ? 'selected' : '' %>>Em Lançamento</option>
+                    <option value="completed" <%= statusFilter === 'completed' ? 'selected' : '' %>>Completo</option>
+                    <option value="paused" <%= statusFilter === 'paused' ? 'selected' : '' %>>Pausado</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Tipo:</label>
+                <select name="type" onchange="applyFilter('type', this.value)">
+                    <option value="">Todos</option>
+                    <option value="tv" <%= typeFilter === 'tv' ? 'selected' : '' %>>TV</option>
+                    <option value="movie" <%= typeFilter === 'movie' ? 'selected' : '' %>>Filme</option>
+                    <option value="ova" <%= typeFilter === 'ova' ? 'selected' : '' %>>OVA</option>
+                    <option value="ona" <%= typeFilter === 'ona' ? 'selected' : '' %>>ONA</option>
+                    <option value="special" <%= typeFilter === 'special' ? 'selected' : '' %>>Especial</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Ano:</label>
+                <select name="year" onchange="applyFilter('year', this.value)">
+                    <option value="">Todos</option>
+                    <% for (let y = new Date().getFullYear(); y >= 2000; y--) { %>
+                    <option value="<%= y %>" <%= yearFilter == y ? 'selected' : '' %>><%= y %></option>
+                    <% } %>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Ordenar:</label>
+                <select name="sort" onchange="applyFilter('sort', this.value)">
+                    <option value="relevance" <%= sortBy === 'relevance' ? 'selected' : '' %>>Relevância</option>
+                    <option value="newest" <%= sortBy === 'newest' ? 'selected' : '' %>>Mais Recentes</option>
+                    <option value="oldest" <%= sortBy === 'oldest' ? 'selected' : '' %>>Mais Antigos</option>
+                    <option value="rating" <%= sortBy === 'rating' ? 'selected' : '' %>>Melhor Avaliados</option>
+                    <option value="views" <%= sortBy === 'views' ? 'selected' : '' %>>Mais Vistos</option>
+                    <option value="alphabetical" <%= sortBy === 'alphabetical' ? 'selected' : '' %>>A-Z</option>
+                </select>
+            </div>
+            
+            <% if (tagFilter || statusFilter || typeFilter || yearFilter) { %>
+            <button class="btn btn-outline btn-sm" onclick="clearFilters()">
+                <i class="fas fa-times"></i>
+                <span>Limpar Filtros</span>
+            </button>
+            <% } %>
+        </div>
+        
+        <!-- Results -->
+        <% if (results.length > 0) { %>
+        <div class="content-grid grid-6">
+            <% results.forEach(([id, anime]) => { %>
+            <div class="anime-card">
+                <a href="/anime/<%= id %>" class="card-link">
+                    <div class="card-image">
+                        <img src="<%= anime.coverImage || '/images/default-anime.jpg' %>" alt="<%= anime.title %>" loading="lazy">
+                        <div class="card-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <% if (anime.rating) { %>
+                        <div class="rating-badge">
+                            <i class="fas fa-star"></i>
+                            <%= anime.rating.toFixed(1) %>
+                        </div>
+                        <% } %>
+                        <% if (anime.isAdult) { %>
+                        <div class="adult-badge-small">+18</div>
+                        <% } %>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title"><%= anime.title %></h3>
+                        <p class="card-meta">
+                            <% if (anime.year) { %>
+                            <span><i class="fas fa-calendar"></i> <%= anime.year %></span>
+                            <% } %>
+                            <% if (anime.status) { %>
+                            <span class="status <%= anime.status %>">
+                                <%= anime.status === 'ongoing' ? 'Em Lançamento' : anime.status === 'completed' ? 'Completo' : 'Pausado' %>
+                            </span>
+                            <% } %>
+                        </p>
+                    </div>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <div class="empty-search">
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2>Nenhum resultado encontrado</h2>
+            <p>Tente buscar com termos diferentes ou ajuste os filtros.</p>
+            
+            <% if (query) { %>
+            <div class="search-suggestions">
+                <h3>Sugestões:</h3>
+                <ul>
+                    <li>Verifique se a ortografia está correta</li>
+                    <li>Tente termos mais genéricos</li>
+                    <li>Use o nome em inglês ou japonês</li>
+                    <li>Remova alguns filtros</li>
+                </ul>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+</section>
+
+<script>
+function applyFilter(key, value) {
+    const url = new URL(window.location.href);
+    if (value) {
+        url.searchParams.set(key, value);
+    } else {
+        url.searchParams.delete(key);
+    }
+    window.location.href = url.toString();
+}
+
+function clearFilters() {
+    const query = new URL(window.location.href).searchParams.get('q');
+    const url = new URL(window.location.origin + '/search');
+    if (query) {
+        url.searchParams.set('q', query);
+    }
+    window.location.href = url.toString();
+}
+</script>
